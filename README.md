@@ -3,6 +3,6 @@
  
  screenshots:
  
- <img src="https://github.com/MaximilianMahlke/SpaceTris/blob/main/Screenshots/Spacetris_Screenshot1.jpg?raw=true>
- <img src="https://github.com/MaximilianMahlke/SpaceTris/blob/main/Screenshots/Spacetris_Screenshot2.jpg?raw=true>
- <img src="https://github.com/MaximilianMahlke/SpaceTris/blob/main/Screenshots/Spacetris_Screenshot3.jpg?raw=true>
+ <img src="https://github.com/MaximilianMahlke/SpaceTris/blob/main/Screenshots/Spacetris_Screenshot1.jpg?raw=true">
+ <img src="https://github.com/MaximilianMahlke/SpaceTris/blob/main/Screenshots/Spacetris_Screenshot2.jpg?raw=true">
+ <img src="https://github.com/MaximilianMahlke/SpaceTris/blob/main/Screenshots/Spacetris_Screenshot3.jpg?raw=true">
