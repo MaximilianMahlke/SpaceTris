@@ -1,0 +1,188 @@
+﻿using System;
+using System.Xml;
+using System.Collections.Generic;
+
+namespace TetrisApp.Tools
+{
+    /// <summary>
+    /// Speichert die wichtigsten variablen Werte (Konfiguration) des Spiels 
+    /// </summary>
+    public class Config
+    {
+        #region VARS
+        // Definition der Größe des Spielfeldes
+        public short Width_GameBoard = 10;
+        public short Height_GameBoard = 18;
+
+        // Definition der Größe des Vorschaufensters
+        public short Width_Preview = 5;
+        public short Height_Preview = 4;
+
+        public string UserName;
+
+        // Auf der GUI angezeigte Spielwerte
+        public int Score = 0;
+        public int KilledLines = 0;
+        public int Level = 0;
+        public string Screen = "WELCOME :) Please enter your name and press \"Start\"!!";
+
+        public SortedDictionary<int, string> Highscore_Core = new SortedDictionary<int, string>();
+        public HighScore_Export HighScore_Export = new HighScore_Export();
+
+        // Variable Werte, ändern sich pro Level-Aufstieg
+        public int Config_ScoreForLineKill = 100;
+        public int Config_ScoreForLanding = 10;
+        public int CounterForNextLevel = 0;
+        public int StepForNextLevel = 2;
+        public double BlockDownIntervall_MS = 1000;
+
+
+        // Animation-Intervalle für Background
+        public static TimeSpan ColorsAnimationTime_STANDARD = TimeSpan.FromMilliseconds(5000);
+        public static TimeSpan BlockAnimationTime_STANDARD = TimeSpan.FromMilliseconds(20000);
+
+        public TimeSpan ColorsAnimationTime = ColorsAnimationTime_STANDARD;
+        public TimeSpan BlockAnimationTime = BlockAnimationTime_STANDARD;
+
+        #endregion VARS
+
+
+        #region CONST
+        public Config()
+        {
+
+        }
+
+        #endregion CONST
+
+        #region METHS
+
+        /// <summary>
+        /// Erhöht mit jedem höheren Level die Fallgeschwindigkeit der Spielblöcke
+        /// </summary>
+        public void BlockDownReducer()
+        {
+            BlockDownIntervall_MS = (double)BlockDownIntervall_MS * 0.85;
+            BlockDownIntervalMS = TimeSpan.FromMilliseconds(BlockDownIntervall_MS);
+
+        }
+
+        public TimeSpan BlockDownIntervalMS = TimeSpan.FromMilliseconds(1000);
+        public TimeSpan CheckForLinesMS = TimeSpan.FromMilliseconds(100);
+        //ui
+
+
+
+        public void ExportConfigData()
+        {
+            // Erstelle den Xml-Writer mit seinen Settings
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+
+            settings.IndentChars = "  ";
+
+            // XmlWriter writer = XmlWriter.Create(System.IO.Path.Combine("P:\\Config.xml"));
+            XmlWriter writer = XmlWriter.Create("Config.xml", settings);
+
+            // "Starte" den Schreibvorgang
+            writer.WriteStartDocument();
+
+            // Start-Tag des Stamm-Elements
+            writer.WriteStartElement("Config");
+            writer.WriteComment("Wer das hier lesen kann weiß, dass mein erster XML-Versuch geklappt hat :D");
+
+            // Start-Tag von "BoardSize"  (Alle Maße für das Spielfeld "GameBoard" und auch Vorschaufeld "PreviewBoard")
+            writer.WriteStartElement("BoardSize");
+
+            // 1. Eintrag in BoardSize
+            writer.WriteElementString("Width_GameBoard", this.Width_GameBoard.ToString());
+            // 2. Eintrag...
+            writer.WriteElementString("Height_GameBoard", this.Height_GameBoard.ToString());
+            // 3. Eintrag ... usw.
+            writer.WriteElementString("Width_Preview", Width_Preview.ToString());
+            writer.WriteElementString("Height_Preview", Height_Preview.ToString());
+
+            // Start-Tag von "User"
+            writer.WriteStartElement("User");
+            // 1. Eintrag in User
+            writer.WriteElementString("Username", this.UserName);
+            // Eintrag in User, allerdings nur der reine Wert OHNE Bezeichner
+            writer.WriteValue("34GXCHB923");
+
+            // End-Tag von User
+            writer.WriteEndElement();
+
+            // End-Tag von BoardSize
+            writer.WriteEndElement();
+
+            // End-Tag von Config (Stamm-Element
+            writer.WriteEndElement();
+
+            // End-Tag des XML-Documents bzw setzt den Wrtier auf den Anfangszustand
+            writer.WriteEndDocument();
+            // Beende writer
+            writer.Close();
+
+
+        }
+        /// <summary>
+        /// Fügt akutellen Score zum Highscore_Core hinzu + TestEintrag
+        /// </summary>
+        public void SetHighScore()
+        {
+            if (this.Highscore_Core.ContainsKey(this.Score) == false)
+            {
+                this.Highscore_Core.Add(this.Score, this.UserName);
+            }
+            else
+            {
+                return;
+            }
+        }
+
+
+        /// <summary>
+        /// Importiert die Highscores aus der HighScore_Export in die HighScore_Core
+        /// </summary>
+        public SortedDictionary<int, string> CONVERT__HighScore_Export__TO__HighScore_Core()
+        {
+            this.Highscore_Core = new SortedDictionary<int, string>();
+
+            for (int i = 0; i < this.HighScore_Export.List_High_NAMES.Count; i++)
+            {
+                if (Highscore_Core.ContainsKey(this.HighScore_Export.List_High_SCORE[i]))
+                {
+                    return Highscore_Core;
+                }
+                else
+                {
+                    Highscore_Core.Add(this.HighScore_Export.List_High_SCORE[i], this.HighScore_Export.List_High_NAMES[i]);
+                }
+            }
+            return Highscore_Core;
+        }
+
+
+        /// <summary>
+        /// Exportiert die Highscores aus der HighScore_Core in die HighScore_Export
+        /// </summary>
+        public void CONVERT__HighScore_Core__TO__HighScore_Export()
+        {
+            int counter = 0;
+            foreach (int Score in this.Highscore_Core.Keys)
+            {
+                this.HighScore_Export.List_High_SCORE.Add(Score);
+            }
+            foreach (string Name in this.Highscore_Core.Values)
+            {
+                this.HighScore_Export.List_High_NAMES.Add(Name);
+            }
+            counter++;
+
+        }
+
+
+
+        #endregion METHS
+    }
+}

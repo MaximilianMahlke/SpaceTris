@@ -1,0 +1,56 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using TetrisApp.Tools.Interaction;
+using TetrisApp;
+
+namespace TetrisGui.Tools.Interaction
+{
+    class Gui_Interaction : GuiInteraction
+    {
+       /// <summary>
+       /// Warteschleife für den SyncMaster
+       /// </summary>
+        public List<Action> ActionQueue = new List<Action>();
+        public MainWindow MainWindow;
+        public Game Game;
+
+        public Gui_Interaction(MainWindow MainWindow, Game Game)
+        {
+            this.MainWindow = MainWindow;
+            this.Game = Game;
+
+        }
+        /// <summary>
+        ///  Verändert Hintergrund-Animations-Geschwindigkeit      0 = slower; 1 = normal; 2 = faster; 3 = ultrafast
+        /// </summary>
+        /// <param name="index"></param>
+        public void AnimationSpeed(int index)
+        {
+            if (index <= 0 && index < 4)
+            {
+                this.MainWindow.BackgroundAnimation.ChangeAnimationSpeed(index);
+            }
+        }
+
+        public override void Refresh_StatisticData()
+        {
+            this.ActionQueue.Add(new Action(() =>
+                {
+                    MainWindow.label_Score.Content = "SCORE : " + System.Environment.NewLine + Game.Config.Score;
+                    MainWindow.label_LEVEL.Content = "LEVEL : " + System.Environment.NewLine + Game.Config.Level;
+                    MainWindow.label_LINES.Content = "LINES : " + System.Environment.NewLine + Game.Config.KilledLines;
+                    MainWindow.label_Screen.Content = Game.Config.Screen;
+                    MainWindow.label_TIME.Content = "PLAYTIME : " + System.Environment.NewLine + Game.GetGameTime().ToString("hh\\:mm\\:ss");
+                }));                        
+        }
+
+        public override void LineKilled(int LineIndex)
+        {
+
+        }
+    }
+}

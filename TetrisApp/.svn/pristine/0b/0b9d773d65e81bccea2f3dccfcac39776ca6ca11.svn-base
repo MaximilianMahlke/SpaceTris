@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Elemente.Felder;
+
+namespace TetrisApp.Elemente.Steine
+{
+    class BlockForm
+    {
+        public List<Feld> Felder;
+        public Feld RotationsFeld;
+        public Farbe Farbe;
+
+
+
+
+
+
+    }
+}
+

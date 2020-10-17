@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Tools;
+using TetrisApp.Elemente.Felder;
+using TetrisApp.Tools;
+using TetrisApp.Elemente.Steine;
+
+
+
+
+namespace TetrisApp
+{
+    public class Spiel
+    {
+        // public Utils Utils;
+        public Block Block;
+        public Config Config;
+        public Board Board;
+        private Timer_Core Timer_System;
+        //   public static List<String> List_Namen = new List<String>();
+
+        public Spiel()
+        {
+            Config = new Config();
+            Board = new Board(this);
+            Timer_System = new Timer_Core();
+        
+            //   Utils = new Utils();
+        }
+    }
+}

@@ -1,0 +1,52 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Threading;
+using System.Timers;
+using System.Diagnostics;
+
+
+namespace TetrisApp.Tools
+{
+    public class Timer_GUI
+    {
+        #region VARS
+        private DispatcherTimer DispatcherTimer;
+        private MainWindow Window;
+        private int Counter;
+        private SyncMaster SyncM;
+        private Game Spiel;
+
+        #endregion VARS
+
+        /// <summary>
+        /// Konstruktor für TimerKlasse  
+        /// </summary>
+        /// <param name="dispatcher2"></param>
+        public Timer_GUI(Dispatcher dispatcher2, MainWindow window, SyncMaster syncMaster, Game spiel)
+        {
+            this.Window = window;
+            this.SyncM = syncMaster;
+            this.Spiel = spiel;
+            this.DispatcherTimer = new DispatcherTimer(DispatcherPriority.Input, dispatcher2);
+            this.DispatcherTimer.Interval = TimeSpan.FromMilliseconds(5);
+            this.DispatcherTimer.Tick += new EventHandler(this.UIaction);
+            this.DispatcherTimer.Start();
+        }
+
+        #region METH
+        private void UIaction(object o, EventArgs args)
+        {
+            SyncM.Sync_Refresh();
+            Counter++;                                                                  // 95, 225, 185
+            this.Window.Background = new SolidColorBrush(Color.FromRgb((byte)(Counter % 95), (byte)(Counter % 222), (byte)(Counter % 185)));
+            this.Window.label_Score.Content = "SCORE: " + System.Environment.NewLine + this.Spiel.Score;
+        }
+
+        #endregion METH
+    }
+}

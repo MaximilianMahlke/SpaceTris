@@ -1,0 +1,38 @@
+﻿
+namespace TetrisApp.Elements.Steine
+{
+        /// <summary>
+        ///  Klasse um Farben zu definieren
+        /// </summary>
+  public struct Color
+    {
+            
+       
+            #region VARIABLEN
+           public byte Red;
+           public byte Green;
+           public byte Blue;
+           public byte? Opacity;
+
+
+            #endregion
+
+            #region KONSTRUKTOR
+            public Color(byte r, byte g, byte b)                           // Konstruktor ohne Transparenz
+            {
+                this.Red = r;
+                this.Green = g;
+                this.Blue = b;
+                this.Opacity = null;
+            }
+
+            public Color(byte r, byte g, byte b, byte? o = null)           // Konstruktor mit Transparenz
+            {
+                this.Red = r;
+                this.Green = g;
+                this.Blue = b;
+                this.Opacity = o;
+            }
+            #endregion
+    }
+}

@@ -1,0 +1,119 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
+using TetrisGui.TetrisSpiel;
+using System.Windows.Controls;
+using TetrisGui.TetrisSpiel.Elemente.Board;
+using System.Windows.Media;
+using TetrisGui.TetrisSpiel.Elemente.Steine;
+
+
+namespace TetrisGui.GUI
+{
+    class BoardUI
+    {
+        #region VARS
+
+        MainWindow Window;
+        List<Object> Liste;
+        BoardFeldUI[,] Array_UI;
+        #endregion
+
+
+        #region KONS
+        public BoardUI(MainWindow Window)
+        {
+            this.Window = Window;
+        }
+        #endregion
+
+        #region METH
+        /// <summary>
+        /// Nimmt ein MainWindow und ein Spiel und legt auf dem Grid_Board Colums und Rows an
+        /// </summary>
+        /// <param name="Window"></param>
+        public void ErstelleGrid(MainWindow Window, Spiel Spiel)
+        {
+            for (short i = 0; i < Spiel.Config.Breite; i++)
+            {
+
+                Window.Grid_Board.ColumnDefinitions.Add(new ColumnDefinition()
+                {
+
+                    Width = new GridLength(30, GridUnitType.Pixel)
+                });
+
+            }
+
+            for (short j = 0; j < Spiel.Config.Hoehe; j++)
+            {
+                Window.Grid_Board.RowDefinitions.Add(new RowDefinition()
+                {
+
+                    Height = new GridLength(30, GridUnitType.Pixel)
+                });
+            }
+
+        }
+
+
+        /// <summary>
+        /// Befüllt das angelegte Grid_Boarder mit Bordern
+        /// </summary>
+
+
+
+        public void GenerateBoardFeldArray(MainWindow Window, Spiel Spiel)
+        {
+            short Hoehe = Spiel.Config.Hoehe;
+            short Breite = Spiel.Config.Breite;
+            this.Array_UI = new BoardFeldUI[Breite, Hoehe];
+
+            for (short i = 0; i < Breite; i++)
+            {
+                for (short j = 0; j < Hoehe; j++)
+                {
+                    BoardFeldUI BFUI = new BoardFeldUI(Window, j, i);
+
+                    this.Array_UI[i, j] = BFUI;
+                }
+            }
+
+
+
+
+        }
+    }
+
+}
+
+
+
+
+//public void GetBlock(List<BlockForm> BlockFormen)
+//{
+//    Liste = BlockFormen;
+//    foreach (BlockForm BF in BlockFormen)
+//    {
+//        //GetBlock2(BlockFormen);
+
+//    }
+//}
+
+
+
+
+//public int GetBlock2(List<BlockForm> Liste)
+//{
+//  int i  =  Liste.Count;
+//  return i;
+//}
+        #endregion
+
+
+
+

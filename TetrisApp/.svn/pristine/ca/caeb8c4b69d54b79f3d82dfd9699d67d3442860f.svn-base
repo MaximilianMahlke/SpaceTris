@@ -1,0 +1,69 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Elemente.Steine;
+using TetrisApp.Tools;
+using TetrisApp.Elemente.Felder;
+//using System.Windows.Threading;
+
+
+namespace TetrisApp.Elemente.Board
+{
+    public class Board
+    {
+        //public class BoordArray
+        //{
+        //    public Object[,] BoordArrayObject = null;
+        //}
+
+        #region VARIABLEN
+        //   Object[,] BoardArray;
+        short Breite;
+        short Hoehe;
+        List<BlockForm> BlockFormen = new List<BlockForm>();                // Erstellt eine Liste aus <BlockForm> mit dem Namen BlockFormen
+        public BoardFeld[,] Array = null;                                   // Erstellt ein 2-dim Array für den Inhalt [BoardFeld]
+        Spiel ParentSpiel;                                                  // Legt eine Referenz OHNE INHALT an, welche auf ein [Spiel] zeigt
+
+        #endregion
+
+
+        #region KONSTRUKTOREN
+        public Board(Spiel Spiel)                                           // Erstellt Kontruktor welcher ein [Spiel] als Argument verlangt
+        {
+            this.ParentSpiel = Spiel;                                       // Packt das [Spiel]-Objekt in die Referenz ParentSpiel                                      
+            Utils.GeneriereBlockformen(this.BlockFormen);                   // Nimmt eine Liste aus [Blockformen] und füllt sie mit den vorgebenen 
+            this.ErstelleSpielfeld();
+            //  this.BoardArray;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        #region METHODEN
+        public void ErstelleSpielfeld()                                     // Erstellt das Spielfeld aus 10x18 [Boardfeldern]
+        {
+            Hoehe = this.ParentSpiel.Config.Hoehe;
+            Breite = this.ParentSpiel.Config.Breite;
+            this.Array = new BoardFeld[Breite, Hoehe];
+
+            for (short x = 0; x < Breite; x++)
+            {
+                for (short y = 0; y < Hoehe; y++)
+                {
+                    Array[x, y] = new BoardFeld(x, y);
+                }
+            }
+        }
+
+
+
+
+
+        #endregion
+    }
+}
+

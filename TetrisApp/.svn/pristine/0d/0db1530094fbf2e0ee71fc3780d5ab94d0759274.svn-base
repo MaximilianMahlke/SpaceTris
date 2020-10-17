@@ -1,0 +1,188 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Tools;
+using TetrisApp.Elemente.Felder;
+using TetrisApp.Tools;
+using TetrisApp.Elemente.Steine;
+using TetrisApp;
+
+
+
+namespace TetrisApp
+{
+    public enum enum_Direction          // Richtungen für Kollisionsabfrage Check_Collision(Directon)
+    {
+        LEFT = 0, RIGHT = 1, DOWN = 2, NO_DIRECTION = 3
+    }
+
+
+    public class Spiel
+    {
+
+        #region VARS
+        public Block CurrentBlock;
+        public Config Config;
+        public Board Board;
+        private Timer_Core Timer_Core;
+        public List<RecurringEvent> RecurringEvents = new List<RecurringEvent>();
+        public bool GameStarted = false;
+        public int Score = 0;
+        public bool CanCheckLines = false;
+        //   public static List<String> List_Namen = new List<String>();
+        #endregion VARS
+
+
+        #region CONS
+        public Spiel()
+        {
+            Config = new Config();
+            Board = new Board(this);
+
+
+            Timer_Core = new Timer_Core();
+            Timer_Core.StartSystemTimer(1);
+
+            // Die Kontrollmethode TimerTick() wird wird dem Tick Event des Timers 
+            // zugeordnet damit diese bei jedem Tick ausgeführt wird und abfragt 
+            Timer_Core.Tick += new Tools.Timer_Core.TickDelegate(this.TimerTick);
+
+            RecurringEvent BlockDown = new RecurringEvent(this.Config.BlockDownIntervalMS, this);
+            RecurringEvents.Add(BlockDown);
+            BlockDown.EventAction = new RecurringEvent.EventActionDelegate(this.Execute_BlockDown);
+            BlockDown.Event_StartAndReset();
+
+            RecurringEvent SpawnNewBlock = new RecurringEvent(this.Config.BlockDownIntervalMS, this);
+            RecurringEvents.Add(SpawnNewBlock);
+            SpawnNewBlock.EventAction = new RecurringEvent.EventActionDelegate(this.Execute_SpawnNewBlock);
+
+            RecurringEvent KillLines = new RecurringEvent(this.Config.CheckForLinesMS, this);
+            RecurringEvents.Add(KillLines);
+            KillLines.EventAction = new RecurringEvent.EventActionDelegate(this.Execute_CheckAndKillAndMoveLines);
+
+        }
+
+        #endregion CONS
+
+
+
+        #region METHS
+
+        // Hier wird der Code von Außen in das RecurringEvent übergeben
+        public void Execute_SpawnNewBlock()
+        {
+            
+            if (this.CurrentBlock.BlockHasLanded == true)
+            {
+                TetrisApp.Tools.Utils.SpawnBlock(this);
+            }
+        }
+
+        public void Execute_CheckAndKillAndMoveLines()
+        {
+            if (this.CanCheckLines == true)
+            {
+                KillLine_y(WichLineIsFull());
+            }
+           
+        }
+
+        public List<int> WichLineIsFull()
+        {
+            // Ziel: finde alle vollen Zeilen (block != null)
+            List<int> LinesToKill = new List<int>();
+            // zuerst alle Zeilen durchlaufen
+            for (int y = this.Config.Height - 1; y > 0; y--)
+            {
+                bool LineIsFull = true;
+                // dann alle Spalten durchlaufen
+                for (int x = 0; x < this.Config.Width; x++)
+                {
+                    if (this.Board.Array[x, y].block == null)
+                    {
+                        LineIsFull = false;
+                    }
+                }
+                if (LineIsFull == true)
+                {
+                    LinesToKill.Add(y);
+                    Score += 300;
+                }
+            }
+            return LinesToKill;
+        }
+
+        //  lösche jede Y-Zeile aus der Liste
+        public void KillLine_y(List<int> ListOfLinesToKill)
+        {
+            int Counter_OfClearedBoardFields = 0;
+            if (ListOfLinesToKill.Count != 0)
+            {
+                foreach (int Line_y in ListOfLinesToKill)
+                {
+                    for (int x = 0; x < this.Config.Width; x++)
+                    {
+                        this.Board.Array[x, Line_y].Clear();
+                        Counter_OfClearedBoardFields++;
+                        if (Counter_OfClearedBoardFields == this.Config.Width - 1)
+                        {
+                            for (int new_x = 0; x < this.Config.Width; x++)
+                            {
+                                MoveBoardFields_DOWN(Line_y);
+                            }
+                            Counter_OfClearedBoardFields = 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Wenn Zeile gelöscht, bewege Alles darüber nach unten
+        public void MoveBoardFields_DOWN(int KilledLine_y)
+        {
+            for (int y = KilledLine_y - 1; y > 0; y--)
+            {
+                for (int x = 0; x < this.Config.Width; x++)
+                {
+
+                    if (this.Board.Array[x, y].block != null
+                       )
+                    {
+                        MoveOneBoardField_Down(this.Board.Array[x, y]);
+                    }
+                }
+            }
+        }
+
+        public void MoveOneBoardField_Down(BoardField boardfield)
+        {
+            // Übernimmt oberes BoardField um 1 nach unten
+            this.Board.Array[boardfield.x, boardfield.y + 1].block = boardfield.block;
+            this.Board.Array[boardfield.x, boardfield.y + 1].Color = boardfield.Color;
+
+            //Lösche oberes Feld
+            this.Board.Array[boardfield.x, boardfield.y].Clear();
+        }
+
+        public void Execute_BlockDown()
+        {
+            CurrentBlock.Move_down();
+        }
+
+        // wirds jede ms aufgerufen und prüft ob eines der RecurringEvents abgelaufen ist und ausgeführt werden soll
+        public void TimerTick()
+        {
+            if (GameStarted == true)
+            {
+                foreach (RecurringEvent Event in RecurringEvents)
+                {
+                    Event.Event_IntervalCheck();
+                }
+            }
+        }
+
+        #endregion METHS
+    }
+}

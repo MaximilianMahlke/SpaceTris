@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Elements.Steine;
+using TetrisApp.Tools;
+using TetrisApp.Elements.Fields;
+//using System.Windows.Threading;
+
+
+namespace TetrisApp.Elements.Fields
+{
+    public class Board
+    {
+        
+        #region VARIABLEN
+        //   Object[,] BoardArray;
+        short Breite;
+        short Hoehe;
+        
+        public BoardField[,] Array_Board = null;                                   // Erstellt ein 2-dim Array für den Inhalt [BoardFeld]
+       
+        Game ParentSpiel;                                                  // Legt eine Referenz OHNE INHALT an, welche auf ein [Spiel] zeigt
+
+        #endregion
+
+
+        #region KONSTRUKTOREN
+        public Board(Game Spiel, short Breite, short Hoehe)                                           // Erstellt Kontruktor welcher ein [Spiel] als Argument verlangt
+        {
+            this.Hoehe = Hoehe;
+            this.Breite = Breite;
+            this.ParentSpiel = Spiel;                                       // Packt das [Spiel]-Objekt in die Referenz ParentSpiel                                      
+           
+            // Nimmt eine Liste aus [Blockformen] und füllt sie mit den vorgebenen 
+            this.ErstelleSpielfeld();
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        #region METHODEN
+        public void ErstelleSpielfeld()                                     // Erstellt das Spielfeld aus 10x18 [Boardfeldern]
+        {
+            this.Array_Board = new BoardField[Breite, Hoehe];
+
+            for (short x = 0; x < Breite; x++)
+            {
+                for (short y = 0; y < Hoehe; y++)
+                {
+                    Array_Board[x, y] = new BoardField(x, y);
+                }
+            }
+        }
+        
+        public void Clear(Board Board)
+        {
+            for (short x = 0; x < Board.Breite; x++)
+            {
+                for (short y = 0; y < Board.Hoehe; y++)
+                {
+                    Array_Board[x, y] = new BoardField(x, y);
+                }
+            }
+        }
+
+        #endregion
+    }
+}
+

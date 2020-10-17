@@ -1,0 +1,78 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
+using TetrisApp;
+using System.Windows.Controls;
+using TetrisApp.Elements.Fields;
+using System.Windows.Media;
+using TetrisApp.Elements.Steine;
+
+
+namespace TetrisGui.GUI
+{
+    public class BoardUI
+    {
+        #region VARS
+
+        private MainWindow Window;
+        private Game Game;
+        public Grid Grid;
+        public BoardFeldUI[,] Array_UI_Board;
+        #endregion
+
+
+        #region KONS
+        public BoardUI(MainWindow Window, Game Game, Grid Grid)
+        {
+            this.Window = Window;
+            this.Game = Game;
+            this.Grid = Grid;
+        }
+        #endregion
+
+        #region METH
+        // Nimmt ein MainWindow und ein Spiel und legt auf dem Grid_Board Colums und Rows an
+        public void ErstelleGrid(short width, short heigth)
+        {
+            for (short i = 0; i < width; i++)
+            {
+                this.Grid.ColumnDefinitions.Add(new ColumnDefinition()
+                {
+                    Width = new GridLength(30, GridUnitType.Pixel)
+                });
+            }
+
+            for (short j = 0; j < heigth; j++)
+            {
+                this.Grid.RowDefinitions.Add(new RowDefinition()
+                {
+                    Height = new GridLength(30, GridUnitType.Pixel)
+                });
+            }
+        }
+        // Befüllt das angelegte Grid_Boarder mit Bordern
+        public void GenerateBoardFeldArray(short width, short height)
+        {
+            this.Array_UI_Board = new BoardFeldUI[width, height];
+
+            for (short i = 0; i < width; i++)
+            {
+                for (short j = 0; j < height; j++)
+                {
+                    BoardFeldUI BFUI = new BoardFeldUI(this, j, i);
+
+                    Array_UI_Board[i, j] = BFUI;
+                }
+            }
+        }
+    }
+}
+        #endregion
+
+
+
+

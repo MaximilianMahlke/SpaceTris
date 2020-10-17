@@ -1,0 +1,122 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Diagnostics;
+
+namespace TetrisGui.Tools
+{
+    
+    public class SyncSlave
+    {
+        public static String Result = "";
+        public static System.Timers.Timer _Timer = new System.Timers.Timer();
+        public static List<DateTime> _L;
+        TimeSpan Ergebnis = new TimeSpan();
+        public static String Sabbel = "";
+        public static int counter = 0;
+
+        public static List<DateTime> DateList
+        {
+            get
+            {
+                if (_L == null)
+                {
+                    Starte();
+                }
+                return _L;
+            }
+        }
+
+
+        #region METH
+
+        public static int Starte()
+        {
+            DateTime Start = DateTime.Now;
+            _Timer = new System.Timers.Timer(1000);
+
+            TimeSpan Ergebnis = new TimeSpan();
+
+            _Timer.Elapsed += new ElapsedEventHandler(_Timer_Elapsed);
+            _Timer.AutoReset = true;
+            DateTime Target = DateTime.Now;
+            _Timer.Start();
+            Ergebnis = Target.Subtract(Start);
+
+            int inttemp = Ergebnis.Milliseconds;
+
+            // String StringTemp = (String)Ergebnis.Milliseconds;
+            //  int Index = StringTemp.IndexOf(".");
+            // String Babbel = StringTemp.Substring(Index + 1, StringTemp.Length - (Index + 1));
+            // Debug.WriteLine(Babbel);
+
+            //   Ergebins = /*Result + "Zeit: " +*/ Ergebnis;
+            ////   Sabbel = Ergebnis.ToString();
+
+            return inttemp;
+        }
+
+        static void _Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Debug.WriteLine(counter + ". EXCEPTION fliegt");
+            counter++;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /// <summary>
+        /// |_| Aufrufer: Timer |_| TODO: Rede mit Core-Array und Synchronisiere, Änderungen werden mit [Sync_Push() - Methode] in das Array_UI geschrieben
+        /// </summary>
+        public void Sync_Pop()
+        {
+
+        }
+
+
+
+        /// <summary>
+        /// |_| Aufrufer: Timer |_|  TODO: Holt sich die Änderungen der [Sync_Pop] und überträge diese in das Array_UI
+        /// </summary>
+        public void Sync_Push()
+        {
+
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,56 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Diagnostics;
+using TetrisApp;
+using TetrisGui;
+using TetrisGui.GUI;
+
+namespace TetrisGui.Tools
+{
+    public class SyncMaster    
+    {
+        private Spiel Spiel;
+        private BoardUI Board_UI;
+
+        #region VARS
+
+        #endregion VARS
+
+        #region CONST
+
+        public SyncMaster(Spiel Spiel, BoardUI Board_UI)
+        {
+            // TODO: Complete member initialization
+            this.Spiel = Spiel;
+            this.Board_UI = Board_UI;
+        }
+
+        #endregion CONST
+
+
+        #region METH
+        
+       public void Sync_Refresh()
+       {
+           for (short x = 0; x < Spiel.Config.Breite; x++)
+           {
+               for (short y = 0; y < Spiel.Config.Hoehe; y++)
+               {
+                 Board_UI.Array_UI[x,y] = Spiel.Board.Array[x,y]; 
+               }
+           }
+           
+           
+           
+           // in Array_UI
+
+
+
+       }
+        #endregion
+    }
+}

@@ -1,0 +1,477 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Shapes;
+using TetrisApp;
+using TetrisApp.Tools;
+using TetrisApp.Tools.Interaction;
+
+namespace TetrisGui.GUI
+{
+    public class BGAnimation
+    {
+        public class AnimationData
+        {
+            public Color color1 = Colors.Transparent;
+            public Color color2 = Colors.Transparent;
+            public Point StartPoint;
+            public Point EndPoint;
+            public TimeSpan AnimationTime;
+            public Game Gamer;
+            private BGAnimation parentAnimation;
+
+            public AnimationData(BGAnimation parentAnimation)
+            {
+                this.parentAnimation = parentAnimation;
+            }
+
+
+            public void GenerateNextData(AnimationData lastData)
+            {
+                Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                this.AnimationTime = TimeSpan.FromMilliseconds(r.Next((int)(parentAnimation.Game.Config.ColorsAnimationTime.TotalMilliseconds * 0.75), (int)parentAnimation.Game.Config.ColorsAnimationTime.TotalMilliseconds + 1));
+
+                if (r.Next(0, 2) == 0)
+                {
+                    StartPoint = new Point(0, (double)r.Next(0, 100) / 100);
+                    EndPoint = new Point(1, 1 - StartPoint.Y);
+                }
+                else
+                {
+                    StartPoint = new Point((double)r.Next(0, 100) / 100, 0);
+                    EndPoint = new Point(1 - StartPoint.X, 1);
+                }
+
+                for (int i = 0; i < 1000; i++)
+                {
+                    int max = 50;
+                    this.color1 = Color.FromArgb(255, (byte)r.Next(0, max), (byte)r.Next(0, max), (byte)r.Next(0, max));
+                    this.color2 = Color.FromArgb(255, (byte)r.Next(0, max), (byte)r.Next(0, max), (byte)r.Next(0, max));
+
+                    int helligkeit1 = color1.R + color1.G + color1.B;
+                    int helligkeit2 = color2.R + color2.G + color2.B;
+
+                    int diff1 = Math.Abs(color1.R - color2.R) + Math.Abs(color1.G - color2.G) + Math.Abs(color1.B - color2.B);
+
+                    int diff2 = 755;
+                    int diff3 = 755;
+
+                    if (lastData != null)
+                    {
+                        diff2 = Math.Abs(color1.R - lastData.color1.R) + Math.Abs(color1.G - lastData.color1.G) + Math.Abs(color1.B - lastData.color1.B);
+                        diff3 = Math.Abs(color2.R - lastData.color2.R) + Math.Abs(color2.G - lastData.color2.G) + Math.Abs(color2.B - lastData.color2.B);
+                    }
+
+                    if (// Minimal Unterschiede:
+                        diff1 > 755 * 0.01 &&
+                        diff2 > 755 * 0.01 &&
+                        diff3 > 755 * 0.01 &&
+                        // nicht zu dunkel, und nicht zu hell:
+                        helligkeit1 > 755 * 0.01 &&
+                        helligkeit2 > 755 * 0.01 &&
+                        helligkeit1 < 755 * 0.1 &&
+                        helligkeit2 < 755 * 0.1
+                        )
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        
+        
+        private AnimationData animationData;
+        private Storyboard storyboard_colors;
+        private Grid element;
+        private FrameworkElement containingElement;
+        public MainWindow Window;
+
+        public BGAnimation(Grid element, FrameworkElement containingElement, Game Game, MainWindow Window)
+        {
+            this.element = element;
+            this.containingElement = containingElement;
+            this.Game = Game;
+            this.Window = Window;
+        }
+
+        public LinearGradientBrush InitializeAnimation()
+        {
+            NameScope.SetNameScope(this.element, new NameScope());
+
+            LinearGradientBrush gradientBrush = new LinearGradientBrush();
+
+            gradientBrush.StartPoint = new Point(0.5, 0);
+            gradientBrush.EndPoint = new Point(0.5, 1);
+
+            GradientStop stop1 = new GradientStop(Colors.Transparent, 0.0);
+            GradientStop stop2 = new GradientStop(Colors.Transparent, 1.0);
+
+            element.RegisterName("GradientStop1", stop1);
+            element.RegisterName("GradientStop2", stop2);
+            element.RegisterName("Background", gradientBrush);
+
+            gradientBrush.GradientStops.Add(stop1);
+            gradientBrush.GradientStops.Add(stop2);
+
+            return gradientBrush;
+        }
+
+        private List<Storyboard> BlockStoryboards = new List<Storyboard>();
+        private Storyboard ColorStoryboard;
+
+        public Game Game { get; private set; }
+
+        public void StartBlockAnimation(int? count = null)
+        {
+            if (count == null)
+            {
+                count = 1;
+            }
+
+            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+
+            for (int i = 0; i < count; i++)
+            {
+                Storyboard sb = new Storyboard();
+
+                int count_borders = 1; // r.Next(5, 10);
+
+                List<Ellipse> borders = new List<Ellipse>();
+                TimeSpan Duration = TimeSpan.FromMilliseconds(r.Next((int)(Game.Config.BlockAnimationTime.TotalMilliseconds * 0.75), (int)Game.Config.BlockAnimationTime.TotalMilliseconds));
+
+                for (int f = 0; f < count_borders; f++)
+                {
+                    //int width = r.Next(50, 150);
+                    int width = 0;
+                    int width_to = r.Next(50, 150);
+
+                    //byte A = (byte)r.Next(75, 100);
+                    //byte RGB = (byte)r.Next(50, 150);
+                    //byte RGB2 = (byte)r.Next(50, 150);
+
+                    //byte A = (byte)r.Next(255, 255);
+                    //byte RGB = (byte)r.Next(200, 255);
+                    //byte RGB2 = (byte)r.Next(200, 255);
+
+                    TimeSpan? BeginTime = TimeSpan.FromMilliseconds(0); //TimeSpan.FromMilliseconds(r.Next(0, (int)(Duration.TotalMilliseconds * 0.2)));
+
+                    Ellipse border = new Ellipse()
+                    {
+                        Fill = new RadialGradientBrush(
+                            startColor: Colors.White,
+                            endColor: Colors.Transparent
+                            //startColor: Color.FromArgb(
+                            //A,
+                            //RGB,
+                            //RGB,
+                            //RGB),
+                            //endColor: Color.FromArgb(
+                            //A,
+                            //RGB2,
+                            //RGB2,
+                            //RGB2)                           
+                            //angle: r.Next(30, 90)
+                            ),
+                        Width = width,
+                        Height = width,
+                        Opacity = 0,
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Top,
+
+                        //Margin = new Thickness(
+                        //    r.Next(0, (int)this.element.ActualWidth),
+                        //    0, //r.Next(0, (int)(this.element.ActualHeight * 0.2)),
+                        //    0, 
+                        //    0),
+
+                        Margin = new Thickness(
+                            this.element.ActualWidth * 0.5 - width * 0.5,
+                            this.element.ActualHeight * 0.5 - width * 0.5,
+                            0,
+                            0),
+
+                        //BorderThickness = new Thickness(1), //r.Next(1, 5)),                      
+
+                        //BorderBrush = new SolidColorBrush(
+                        //    Color.FromArgb(
+                        //    A,
+                        //    100,
+                        //    100,
+                        //    100))
+                    };
+                    Panel.SetZIndex(border, 1);
+                    borders.Add(border);
+                    this.element.Children.Add(border);
+
+                    {
+                        ThicknessAnimation thicknessAnimation = new ThicknessAnimation();
+                        int direction = r.Next(0, 4);
+                        if (direction == 0) // left
+                        {
+                            thicknessAnimation.To = new Thickness(
+                                0 - width_to,
+                                r.Next(-width_to, (int)this.element.ActualHeight),
+                                0,
+                                0);
+                        }
+                        else if (direction == 1) // top
+                        {
+                            thicknessAnimation.To = new Thickness(
+                                r.Next(-width_to, (int)this.element.ActualWidth),
+                                0 - width_to,
+                                0,
+                                0);
+                        }
+                        else if (direction == 2) // right
+                        {
+                            thicknessAnimation.To = new Thickness(
+                                this.element.ActualWidth + width_to,
+                                r.Next(-width_to, (int)this.element.ActualHeight),
+                                0,
+                                0);
+                        }
+                        else if (direction == 3) // bottom
+                        {
+                            thicknessAnimation.To = new Thickness(
+                                r.Next(-width_to, (int)this.element.ActualWidth),
+                                this.element.ActualHeight + width_to,
+                                0,
+                                0);
+                        }
+
+                        double Max_Distance = Math.Sqrt(
+                            Math.Pow(Math.Abs(0 - border.Margin.Left), 2) +
+                            Math.Pow(Math.Abs(0 - border.Margin.Top), 2));
+
+                        double Distance =
+                            Math.Sqrt(
+                            Math.Pow(Math.Abs(border.Margin.Left - thicknessAnimation.To.Value.Left), 2) +
+                            Math.Pow(Math.Abs(border.Margin.Top - thicknessAnimation.To.Value.Top), 2));
+
+                        //thicknessAnimation.To = new Thickness(r.Next(0, (int)this.element.ActualWidth), this.element.ActualHeight, 0, 0);
+                        if (Max_Distance != 0)
+                            thicknessAnimation.Duration = TimeSpan.FromMilliseconds(Duration.TotalMilliseconds * (Distance / Max_Distance));
+                        else
+                            thicknessAnimation.Duration = Duration;
+
+                        thicknessAnimation.BeginTime = BeginTime;
+
+                        Storyboard.SetTarget(thicknessAnimation, border);
+                        Storyboard.SetTargetProperty(thicknessAnimation, new PropertyPath(Border.MarginProperty));
+
+                        sb.Children.Add(thicknessAnimation);
+                    }
+
+                    {
+                        DoubleAnimation da = new DoubleAnimation()
+                        {
+                            To = 1,
+                            BeginTime = BeginTime,
+                            Duration = Duration   //TimeSpan.FromMilliseconds(200)
+                        };
+                        Storyboard.SetTarget(da, border);
+                        Storyboard.SetTargetProperty(da, new PropertyPath(Border.OpacityProperty));
+                        sb.Children.Add(da);
+                    }
+
+                    //{
+                    //    DoubleAnimation da = new DoubleAnimation()
+                    //    {
+                    //        To = 0,
+                    //        BeginTime = TimeSpan.FromMilliseconds(Duration.TotalMilliseconds * 0.5),
+                    //        Duration = TimeSpan.FromMilliseconds(Duration.TotalMilliseconds * 0.5)
+                    //    };
+                    //    Storyboard.SetTarget(da, border);
+                    //    Storyboard.SetTargetProperty(da, new PropertyPath(Border.OpacityProperty));
+                    //    sb.Children.Add(da);
+                    //}
+
+                    {
+                        DoubleAnimation da = new DoubleAnimation()
+                        {
+                            To = width_to,
+                            BeginTime = BeginTime,
+                            Duration = Duration
+                        };
+                        Storyboard.SetTarget(da, border);
+                        Storyboard.SetTargetProperty(da, new PropertyPath(Border.WidthProperty));
+                        sb.Children.Add(da);
+                    }
+
+                    {
+                        DoubleAnimation da = new DoubleAnimation()
+                        {
+                            To = width_to,
+                            BeginTime = BeginTime,
+                            Duration = Duration
+                        };
+                        Storyboard.SetTarget(da, border);
+                        Storyboard.SetTargetProperty(da, new PropertyPath(Border.HeightProperty));
+                        sb.Children.Add(da);
+                    }
+                }
+
+                if (count > 1)
+                {
+                    sb.BeginTime = TimeSpan.FromMilliseconds(r.Next(0, (int)Duration.TotalMilliseconds));
+                }
+
+                sb.Completed += new EventHandler((sender, args) =>
+                {
+                    //sb.Remove(this.containingElement);
+                    //storyboard = null;
+                    foreach (Ellipse border in borders)
+                    {
+                        this.element.Children.Remove(border);
+                    }
+                    BlockStoryboards.Remove(sb);
+                    StartBlockAnimation();
+                });
+
+                sb.AccelerationRatio = 1;
+                sb.Begin(this.containingElement, true);
+                BlockStoryboards.Add(sb);
+            }
+        }
+
+        public void StartColorAnimation()
+        {
+            storyboard_colors = new Storyboard();
+
+
+            AnimationData _animationData = new AnimationData(this);
+            _animationData.GenerateNextData(this.animationData);
+            this.animationData = _animationData;
+
+            {
+                ColorAnimation gradientStopColorAnimation = new ColorAnimation();
+
+                gradientStopColorAnimation.To = animationData.color1;
+                gradientStopColorAnimation.Duration = animationData.AnimationTime;
+
+                Storyboard.SetTargetName(gradientStopColorAnimation, "GradientStop1");
+                Storyboard.SetTargetProperty(gradientStopColorAnimation, new PropertyPath(GradientStop.ColorProperty));
+
+                storyboard_colors.Children.Add(gradientStopColorAnimation);
+            }
+
+            {
+                ColorAnimation gradientStopColorAnimation = new ColorAnimation();
+
+                gradientStopColorAnimation.To = animationData.color2;
+                gradientStopColorAnimation.Duration = animationData.AnimationTime;
+
+                Storyboard.SetTargetName(gradientStopColorAnimation, "GradientStop2");
+                Storyboard.SetTargetProperty(gradientStopColorAnimation, new PropertyPath(GradientStop.ColorProperty));
+
+                storyboard_colors.Children.Add(gradientStopColorAnimation);
+            }
+
+            {
+                PointAnimation pointAnimation = new PointAnimation();
+
+                pointAnimation.To = animationData.StartPoint;
+                pointAnimation.Duration = animationData.AnimationTime;
+
+                Storyboard.SetTargetName(pointAnimation, "Background");
+                Storyboard.SetTargetProperty(pointAnimation, new PropertyPath(LinearGradientBrush.StartPointProperty));
+
+                storyboard_colors.Children.Add(pointAnimation);
+            }
+
+            {
+                PointAnimation pointAnimation = new PointAnimation();
+
+                pointAnimation.To = animationData.EndPoint;
+                pointAnimation.Duration = animationData.AnimationTime;
+
+                Storyboard.SetTargetName(pointAnimation, "Background");
+                Storyboard.SetTargetProperty(pointAnimation, new PropertyPath(LinearGradientBrush.EndPointProperty));
+
+                storyboard_colors.Children.Add(pointAnimation);
+            }
+
+            storyboard_colors.Completed += new EventHandler((sender, args) =>
+            {
+                //storyboard.Remove(this.containingElement);
+                //storyboard = null;                
+                StartColorAnimation();
+            });
+
+            storyboard_colors.Begin(this.containingElement, true);
+
+            this.ColorStoryboard = storyboard_colors;
+        }
+        /// <summary>
+        /// 0 = slower; 1 = normal; 2 = faster; 3 = ultrafast
+        /// </summary>
+        /// <param name="Key"></param>
+        public void ChangeAnimationSpeed(enum_SpeedRatio SpeedRatio)
+        {
+            double SpeedFactor = 1;
+
+            switch (SpeedRatio)
+            {
+                case enum_SpeedRatio.Slower:
+                    // slower
+                    SpeedFactor = (double)1 / 0.7;
+                   
+                    break;
+
+                case enum_SpeedRatio.Normal:
+                    // normal
+                    Game.Config.ColorsAnimationTime = Config.ColorsAnimationTime_STANDARD;
+                    Game.Config.BlockAnimationTime = Config.BlockAnimationTime_STANDARD;
+
+                    this.Window.SchlingernMargin = 10;
+
+                    break;
+
+                case enum_SpeedRatio.Faster:
+                    //faster
+
+                    SpeedFactor = 0.9;
+
+                  
+                    break;
+
+                case enum_SpeedRatio.UltraFast:
+
+                    SpeedFactor = (double)1 / 10;
+                    
+                    this.Window.SchlingernMargin = 20;
+
+                    break;
+
+                case enum_SpeedRatio.Refresh:
+                   
+                    this.Window.SchlingernMargin = 10;
+                    break;
+
+                default:
+                    break;
+            }
+
+
+            Game.Config.ColorsAnimationTime = TimeSpan.FromMilliseconds(Game.Config.ColorsAnimationTime.TotalMilliseconds * SpeedFactor);
+            Game.Config.BlockAnimationTime = TimeSpan.FromMilliseconds(Game.Config.BlockAnimationTime.TotalMilliseconds * SpeedFactor);
+            this.Window.SchlingernDuration = TimeSpan.FromMilliseconds(2000 * SpeedFactor);
+
+
+            foreach (Storyboard s in this.Window.SchlingernStoryboards)
+            {
+                s.SetSpeedRatio(this.Window, (double)1 / SpeedFactor);
+            }
+
+            this.ColorStoryboard.SetSpeedRatio(this.containingElement, (double)1 / SpeedFactor);
+
+            foreach (Storyboard s in this.BlockStoryboards)
+            {
+                s.SetSpeedRatio(this.containingElement, (double)1 / SpeedFactor);
+            }
+        }
+    }
+}

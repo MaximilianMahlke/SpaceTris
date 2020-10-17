@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Elemente.Felder;
+
+namespace TetrisApp.Elemente.Board
+{
+    public class BoardFeld : Feld
+    {
+        #region VARIABLEN
+
+        private short i;
+        private short j;
+        #endregion
+
+        #region KONSTRUKTOREN
+        public BoardFeld()
+        {
+        }
+
+        public BoardFeld(short xt, short yt)
+        {
+            x = xt; 
+            y = yt;
+        }
+        #endregion
+    
+       
+        #region METHODEN
+        
+        #endregion
+    }
+}

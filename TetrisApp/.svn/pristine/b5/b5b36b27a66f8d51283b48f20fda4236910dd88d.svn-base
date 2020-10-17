@@ -1,0 +1,81 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Elemente.Felder;
+using TetrisApp.Elemente.Steine;
+using TetrisApp;
+
+
+
+namespace TetrisApp.Elemente.Steine
+{
+    public class Block
+    {
+        #region VARS
+        public  int Rotation { get; set; }
+        //  public static int SteinCounter { get; set; }
+        public  String Name;
+        public  BlockForm form;
+        public  Farbe randomfarbe = new Farbe(255, 255, 0, 0);
+        public  Spiel spiel;
+        public int CurrentPos_x;
+        public int CurrentPos_y;
+        #endregion VARS
+
+        #region CONST
+        public Block(BlockForm blockform, Spiel spiel)
+        {
+            this.form = blockform;
+
+            this.spiel = spiel;
+
+         
+        }
+        #endregion CONST
+
+        #region METHS
+        /// <summary>
+        /// Aktueller Stein inkl Rotation wird in das Spielfeld (Board) übertragen, damit man ihn sieht
+        /// </summary>
+        public void TransferInBoard(Block block)
+        {
+            foreach (BlockFeld blockfeld in this.form.List_BlockVarianten[Rotation])
+            {
+                int x = CurrentPos_x + blockfeld.x;
+                int y = CurrentPos_y + blockfeld.y;
+       
+                spiel.Board.Array[x, y].Farbe = new Farbe(111, 111, 111);
+            }
+        }
+
+
+        public void Drehen_rechts()
+        {
+
+        }
+
+        public void Drehen_links()
+        {
+
+        }
+
+        public void Move_right()
+        {
+
+        }
+
+        public void Move_left()
+        {
+
+        }
+
+        public void Move_down()
+        {
+
+        }
+
+        #endregion METHS
+    }
+}

@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Elements.Fields;
+using TetrisApp.Elements.Steine;
+
+namespace TetrisApp.Elements.Steine
+{
+    public class BlockForm
+    {
+
+        public List<List<BlockField>> List_BlockVarianten;
+        public Farbe Farbe;
+       
+
+
+
+
+
+
+    }
+}
+

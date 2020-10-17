@@ -1,0 +1,47 @@
+﻿<Window x:Class="TetrisGui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Disser(to)tris" Height="600" Width="800" Closed="Window_Closed" Closing="Window_Closing" KeyDown="Window_KeyDown">
+    <Grid Name="Grid_Main">
+        <Grid Panel.ZIndex="100">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="107*"/>
+                <ColumnDefinition Width="157*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Name="Grid_GameBoard" HorizontalAlignment="Center"  Margin="216,24,276,5" VerticalAlignment="Center" Width="300" Height="540" Opacity="0.7" Grid.ColumnSpan="2" >
+
+                <Grid.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                        <GradientStop Color="#E5AA00B2"/>
+                        <GradientStop Color="#E203035B" Offset="1"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+            </Grid>
+
+            <Grid Name="Grid_PreviewBoard" HorizontalAlignment="Left"  Margin="247,380,0,0" VerticalAlignment="Top" Opacity="0.7" Grid.Column="1" >
+
+                <Grid.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                        <GradientStop Color="#E5AA00B2"/>
+                        <GradientStop Color="#E203035B" Offset="1"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+            </Grid>
+
+
+            <Label x:Name="label_Score" Content="SCORE:" HorizontalAlignment="Center" Margin="212,87,10,412" Height="70" Width="249" FontSize="24" FontWeight="Bold" Grid.Column="1" Padding="5,3.2,5,5"/>
+            <Button Content="Intro" HorizontalAlignment="Left" Margin="30,95,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" IsTabStop="False"/>
+            <Button x:Name="button_Spawn" Content="START" HorizontalAlignment="Left" Margin="30,127,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.053,-0.25" Click="Button_Click_1" IsTabStop="False"/>
+            <Button x:Name="button_Down" Content="RUNTER" HorizontalAlignment="Left" Margin="66,251,0,0" VerticalAlignment="Top" Width="75" Click="button_Click_2" IsTabStop="False"/>
+            <Button x:Name="Clear" Content="Clear" HorizontalAlignment="Left" Margin="125,95,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3" IsTabStop="False"/>
+            <Button x:Name="button_Left" Content="LINKS" HorizontalAlignment="Left" Margin="20,226,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_4" IsTabStop="False"/>
+            <Button x:Name="button_Right" Content="RECHTS" HorizontalAlignment="Left" Margin="100,226,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_5" IsTabStop="False"/>
+            <Button Content="DREHEN" HorizontalAlignment="Left" Margin="66,201,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_6" IsTabStop="False"/>
+            <Button Content="PAUSE" HorizontalAlignment="Left" Margin="30,152,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.027,-0.75" Click="Button_Click_7" IsTabStop="False"/>
+            <Label x:Name="label_LINES" Content="LINES:" HorizontalAlignment="Center" Margin="212,162,10,337" Height="70" Width="249" FontSize="24" FontWeight="Bold" Grid.Column="1" Padding="5,3.2,5,5"/>
+            <Label x:Name="label_LEVEL" Content="LEVEL:" HorizontalAlignment="Center" Margin="212,237,10,262" Height="70" Width="249" FontSize="24" Grid.Column="1" FontWeight="Bold" Padding="5,3.2,5,5"/>
+            <Label x:Name="label_TIME" Content="TIME:" HorizontalAlignment="Center" Margin="212,312,10,187" Height="70" Width="249" FontSize="24" FontWeight="Bold" Grid.Column="1" Padding="5,3.2,5,5"/>
+            <Label x:Name="label_Screen" Content="Welcome!" HorizontalAlignment="Center" Margin="212,12,10,487" Height="70" Width="249" FontSize="24" FontWeight="Bold" Grid.Column="1" Padding="5,3.2,5,5"/>
+        </Grid>
+    </Grid>
+</Window>

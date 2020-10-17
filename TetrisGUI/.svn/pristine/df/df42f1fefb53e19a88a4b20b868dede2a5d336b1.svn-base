@@ -1,0 +1,266 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using TetrisApp;
+using TetrisGui.GUI;
+using TetrisGui.Tools;
+using TetrisApp.Elements.Fields;
+using System.Diagnostics;
+using System.Threading;
+using TetrisApp.Elements.Steine;
+
+namespace TetrisGui
+{
+    /// <summary>
+    /// Interaktionslogik für MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+
+        // Timer für UI
+        private BoardUI Board_UI_GameBoard;
+        private BoardUI Board_UI_PreviewBoard;
+        private Game Game;
+        private Timer_GUI Timer;
+        private SyncMaster Sync;
+        private BGAnimation BackgroundAnimation;
+
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            // Background
+            BackgroundAnimation = new BGAnimation(Grid_Main, Grid_Main);
+            Grid_Main.Background = BackgroundAnimation.InitializeAnimation();
+            BackgroundAnimation.StartAnimation();
+            BackgroundAnimation.StartBlockAnimation(100);
+
+
+            this.KeyDown += new KeyEventHandler(Window_KeyDown);
+
+            #region UI
+
+            Game = new Game();
+
+            // Erstelle GameBoard
+            Board_UI_GameBoard = new BoardUI(this, Game, Grid_GameBoard);
+            Board_UI_GameBoard.ErstelleGrid(this.Game.Config.Width_GameBoard, this.Game.Config.Height_GameBoard);
+            Board_UI_GameBoard.GenerateBoardFeldArray(this.Game.Config.Width_GameBoard, this.Game.Config.Height_GameBoard);
+           
+            // Erstelle PreviewBoard
+            Board_UI_PreviewBoard = new BoardUI(this, Game, Grid_PreviewBoard);
+            Board_UI_PreviewBoard.ErstelleGrid(this.Game.Config.Width_Preview, this.Game.Config.Height_Preview);
+            Board_UI_PreviewBoard.GenerateBoardFeldArray(this.Game.Config.Width_Preview, this.Game.Config.Height_Preview);
+
+            Sync = new SyncMaster(Game, Board_UI_GameBoard, Board_UI_PreviewBoard);
+            this.Timer = new Timer_GUI(this.Dispatcher, this, Sync, Game);
+
+         //   Intro();
+           
+        }
+            #endregion UI
+
+
+
+        public void Intro()
+        {
+
+            Thread thread = new Thread(() =>
+            {
+
+                Random random = new Random();
+                int Dauer_Millis = 5000;
+
+                DateTime StartZeit = DateTime.Now;
+                DateTime EndZeit = StartZeit.AddMilliseconds(Dauer_Millis);
+                byte Dauer = (byte)random.Next(500, 1000);
+
+                SpinWait sw = new SpinWait();
+
+
+                int count = 0;
+                double y = 1;
+                double x = 0;
+
+                while (DateTime.Now < EndZeit)
+                {
+                    if (DateTime.Now < StartZeit.AddMilliseconds(3300))
+                    {
+                        this.Game.Board.Array_Board[random.Next((int)x), random.Next((int)y)].Color = new TetrisApp.Elements.Steine.Farbe(
+                            (byte)random.Next(256),
+                            (byte)random.Next(256),
+                            (byte)random.Next(256),
+                            (byte)random.Next(256));
+                    }
+
+                    else
+                    {
+                        this.Game.Board.Array_Board[random.Next((int)x), random.Next((int)y)].Color = null;
+                    }
+                    count++;
+
+                    if (y < 18.9)
+                    {
+                        y += 0.015;
+                    }
+
+                    if (x < 10.9)
+                    {
+                        x += 0.009;
+                    }
+
+                    Dauer = (byte)(Dauer - 1.85);
+                    if (Dauer < 13)
+                    {
+                        Dauer = 14;
+
+                    }
+
+
+                    for (int i = 0; i < Dauer; i++)
+                    {
+                        sw.SpinOnce();
+                    }
+                    //Thread.Sleep(Dauer);
+                }
+                count = 0; 
+                this.Game.Board.Clear(this.Game.Board);
+            });
+            thread.Start();
+           
+        }
+
+
+
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Intro();
+        }
+
+
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            TetrisApp.Tools.Utils.SpawnBlock(this.Game);
+            this.Game.GameStarted = true;
+            this.button_Spawn.IsEnabled = false;
+
+        }
+
+
+
+        private void button_Click_2(object sender, RoutedEventArgs e)
+        {
+
+            if (this.Game.CurrentBlock.Move_down() == false && this.Game.GameStarted == true)
+            {
+                TetrisApp.Tools.Utils.SpawnBlock(this.Game);
+            }
+
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            this.Game.Board.Clear(this.Game.Board);
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            this.Game.CurrentBlock.Move_left();
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            this.Game.CurrentBlock.Move_right();
+        }
+
+
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            this.Game.CurrentBlock.Turn_right();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Process.GetCurrentProcess().Kill();
+            Environment.Exit(0);
+        }
+
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            if (this.Game.GameStarted == true)
+            {
+                this.Game.GameStarted = false;
+            }
+            else
+            {
+                this.Game.GameStarted = true;
+            }
+
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (this.Game.LastBlockMove == null ||
+                this.Game.LastBlockMove < DateTime.Now.Subtract(TimeSpan.FromMilliseconds(50)))
+            {
+
+                switch (e.Key)
+                {
+                    case Key.Left:
+                        this.Game.CurrentBlock.Move_left();
+                        this.Game.LastBlockMove = DateTime.Now;
+                        break;
+
+                    case (Key.Right):
+                        this.Game.CurrentBlock.Move_right();
+                        this.Game.LastBlockMove = DateTime.Now;
+                        break;
+
+                    case Key.Down:
+                        this.Game.CurrentBlock.Move_down();
+                        this.Game.LastBlockMove = DateTime.Now;
+                        break;
+
+                    case Key.Up:
+                        this.Game.CurrentBlock.Turn_right();
+                        this.Game.LastBlockMove = DateTime.Now;
+                        break;
+
+                    case Key.Enter:
+                        if (this.Game.GameStarted == false)
+                        {
+                            TetrisApp.Tools.Utils.SpawnBlock(this.Game);
+                            this.Game.GameStarted = true;
+                            this.button_Spawn.IsEnabled = false;
+                            break;
+                        }
+                        break;
+
+                    case Key.Escape:
+                        Process.GetCurrentProcess().Kill();
+                        Environment.Exit(0);
+                        break;
+                }
+            }
+        }
+    }
+}

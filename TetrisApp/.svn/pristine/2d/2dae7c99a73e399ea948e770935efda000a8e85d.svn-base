@@ -1,0 +1,53 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Elemente.Felder;
+using TetrisApp.Elemente.Steine;
+
+namespace TetrisApp.Elemente.Steine
+{
+  public  class Stein
+    {
+        #region VARS
+
+        public Feld[,] SteinArray;
+
+        #endregion VARS
+
+        #region CONST
+
+        public Stein()
+        {
+    
+        }
+        #endregion CONST
+
+
+        #region METHS
+
+
+
+        public void New_Stein(BlockForm bf, short x, short y)
+        {
+            
+        }
+
+        public void Drehen_rechts(BlockForm bf, short x, short y)
+        {
+
+        }
+
+        public void Move_right()
+        {
+
+        }
+
+        public void Move_left()
+        {
+
+        }
+        #endregion METHS
+    }
+}

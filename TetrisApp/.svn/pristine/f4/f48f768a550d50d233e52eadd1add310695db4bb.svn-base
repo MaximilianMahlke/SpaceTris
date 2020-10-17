@@ -1,0 +1,76 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Drawing;
+
+namespace TetrisApp.Elemente.Felder
+{
+   public class Feld
+    {
+
+
+        #region KlassenVariablen
+        public short x;
+        public short y;
+        #endregion
+
+
+        #region Konstruktoren
+        public Feld()
+        {
+            x = 0; y = 0;
+        }
+
+        public Feld(short xt, short yt)
+        {
+            x = xt; y = yt;
+        }
+        #endregion
+
+
+
+        #region Methoden
+
+
+
+        #endregion
+
+    }
+}
+
+
+
+
+
+//  private Point AktuellePosition;
+//  private Point SpawnTest;
+
+/*   private Point RotatorPosition           // Andere Optionen um schreibgeschützt zu erreichen sind 1. "const" vor die Variable oder 2 "readonly" davor oder 3. den Setter private setzen
+ {get {return RotatorPosition;}private set{RotatorPosition = value}} */
+
+
+
+
+/*
+
+ #region VARIABLEN
+ #endregion#
+
+ 
+#region KONSTRUKTOREN
+ #endregion
+ 
+ 
+#region METHODES
+ #endregion
+___________________________________________________________
+___________________________________________________________
+ * 
+
+ * protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+        }
+*/

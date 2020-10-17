@@ -1,0 +1,73 @@
+﻿using System;
+
+namespace TetrisApp.Tools
+{
+    /// <summary>
+    /// Speichert die wichtigsten variablen Werte (Konfiguration) des Spiels 
+    /// </summary>
+    public class Config
+    {
+        #region VARS
+        // Definition der Größe des Spielfeldes
+        public short Width_GameBoard = 10;
+        public short Height_GameBoard = 18;
+      
+        // Definition der Größe des Vorschaufensters
+        public short Width_Preview = 5;
+        public short Height_Preview = 4;
+
+       
+
+        // Auf der GUI angezeigte Spielwerte
+        public int Score = 0;
+        public int KilledLines = 0;
+        public int Level = 0;
+        public string Screen = "Welcome!";
+
+        // Variable Werte, ändern sich pro Level-Aufstieg
+        public int Config_ScoreForLineKill = 100;
+        public int Config_ScoreForLanding = 10;
+        public int CounterForNextLevel = 0;
+        public int StepForNextLevel = 2;
+        public double BlockDownIntervall_MS = 1000;
+        
+        public static TimeSpan ColorsAnimationTime_STANDARD = TimeSpan.FromMilliseconds(5000);
+        public static TimeSpan BlockAnimationTime_STANDARD = TimeSpan.FromMilliseconds(20000);
+
+        public TimeSpan ColorsAnimationTime = ColorsAnimationTime_STANDARD;
+        public TimeSpan BlockAnimationTime = BlockAnimationTime_STANDARD; 
+
+        #endregion VARS
+
+
+
+      
+        #region CONST
+        public Config()
+        {
+
+        }
+          
+        #endregion CONST
+
+        #region METHS
+
+        /// <summary>
+        /// Erhöht mit jedem höheren Level die Fallgeschwindigkeit der Spielblöcke
+        /// </summary>
+        public void BlockDownReducer()
+        {
+            BlockDownIntervall_MS = (double)BlockDownIntervall_MS * 0.85;
+            BlockDownIntervalMS = TimeSpan.FromMilliseconds(BlockDownIntervall_MS);
+            
+        }
+
+        public TimeSpan BlockDownIntervalMS = TimeSpan.FromMilliseconds(1000);
+        public TimeSpan CheckForLinesMS = TimeSpan.FromMilliseconds(100);
+        //ui
+        #endregion METHS
+
+
+
+    }
+}

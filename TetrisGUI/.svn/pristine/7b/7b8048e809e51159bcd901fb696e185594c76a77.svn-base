@@ -1,0 +1,153 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Animation;
+using TetrisApp;
+using TetrisApp.Tools.Interaction;
+
+namespace TetrisGui.Tools.Interaction
+{
+    class Gui_Interaction : GuiInteraction
+    {
+        /// <summary>
+        /// Warteschleife für den SyncMaster
+        /// </summary>
+        public List<Action> ActionQueue = new List<Action>();
+        public MainWindow MainWindow;
+        public Game Game;
+        private bool NoMoreLoops = false;
+
+        public Gui_Interaction(MainWindow MainWindow, Game Game)
+        {
+            this.MainWindow = MainWindow;
+            this.Game = Game;
+
+        }
+        /// <summary>
+        ///  Verändert Hintergrund-Animations-Geschwindigkeit      0 = slower; 1 = normal; 2 = faster; 3 = ultrafast
+        /// </summary>
+        /// <param name="index"></param>
+        public override void AnimationSpeed(enum_SpeedRatio SpeedRatio)
+        {
+            this.ActionQueue.Add(new Action(() =>
+                {
+                    //SpeedRatio = enum_SpeedRatio.UltraFast;
+
+                    if (Enum.IsDefined(typeof(enum_SpeedRatio), SpeedRatio))
+                    {
+                        this.MainWindow.BackgroundAnimation.ChangeAnimationSpeed(SpeedRatio);
+                    }
+                }));
+        }
+
+        public override void Refresh_StatisticData()
+        {
+            this.ActionQueue.Add(new Action(() =>
+                {
+                    MainWindow.label_Score.Content = "SCORE : " + System.Environment.NewLine + Game.Config.Score;
+                    MainWindow.label_LEVEL.Content = "LEVEL : " + System.Environment.NewLine + Game.Config.Level;
+                    MainWindow.label_LINES.Content = "LINES : " + System.Environment.NewLine + Game.Config.KilledLines;
+                    MainWindow.label_Screen.Content = Game.Config.Screen;
+                    MainWindow.label_EARTHTIME.Content = "EARTHTIME : " + System.Environment.NewLine + DateTime.Now.ToLocalTime().ToLongTimeString();
+
+                    ShowHighScore_Json();
+
+                    if (this.Game.GameIsOver == false &&
+                        this.Game.GameRunning == true)
+                    {
+                        MainWindow.label_TIME.Content = "PLAYTIME : " + System.Environment.NewLine + Game.GetGameTime().ToString("hh\\:mm\\:ss");
+                    }
+                   
+                }));
+        }
+
+        public void ShowHighScore_Json()
+        {
+            if (this.Game.GameIsOver == true &&
+                       NoMoreLoops == false)
+            {
+                string _Highscore = "\t TOP 15 | HIGHSCORES:                                (Json)" + System.Environment.NewLine;
+                int counter = 1;
+                string outstring;
+                for (int i = 10000000; i > 0; i--)
+                {
+                    if (this.Game.Config.Highscore_Core.ContainsKey(i))
+                    {
+                        this.Game.Config.Highscore_Core.TryGetValue(i, out outstring);
+
+                        _Highscore += System.Environment.NewLine +
+                        counter + ". \t| Score: " + i + "\t | Player: " +
+                        this.Game.Config.Highscore_Core[i];
+
+                        counter++;
+                        if (counter == 16)
+                        {
+                            break;
+                        }
+                    }
+                }
+                MainWindow.label_HighScore.Content = _Highscore;
+                MainWindow.border_highscore.Opacity = 1.0;
+                this.NoMoreLoops = true;
+            }
+        }
+
+        public override void LineKilled(int LineIndex)
+        {
+        }
+
+
+        public override void CodeRed()
+        {
+            this.ActionQueue.Add(new Action(() =>
+               {
+                   if (this.MainWindow.Storyboard_GameOver != null)
+                   {
+                       this.MainWindow.Storyboard_GameOver.Stop();
+                   }
+                   this.MainWindow.Storyboard_GameOver = new Storyboard();
+
+                   DoubleAnimation da = new DoubleAnimation()
+                   {
+                       From = 0,
+                       To = 1,
+                       Duration = TimeSpan.FromMilliseconds(500),
+                       AutoReverse = true
+                   };
+
+                   Storyboard.SetTargetProperty(this.MainWindow.Storyboard_GameOver, new PropertyPath(Image.OpacityProperty));
+                   Storyboard.SetTarget(da, MainWindow.Image_Cockpit_CodeRed);
+                   this.MainWindow.Storyboard_GameOver.RepeatBehavior = RepeatBehavior.Forever;
+                   this.MainWindow.Storyboard_GameOver.Children.Add(da);
+                   this.MainWindow.Storyboard_GameOver.Begin(MainWindow.Image_Cockpit_CodeRed, true);
+               }));
+        }
+
+        public override void LineBlockKilled(TetrisApp.Elements.Fields.BoardField boardField, TimeSpan Duration)
+        {
+            this.ActionQueue.Add(new Action(() =>
+            {
+                Storyboard storyboard = new Storyboard();
+
+                DoubleAnimation da = new DoubleAnimation()
+                {
+                    From = 1,
+                    To = 0,
+                    Duration = Duration
+                };
+
+                Storyboard.SetTargetProperty(storyboard, new PropertyPath(Border.OpacityProperty));
+                Storyboard.SetTarget(da, this.MainWindow.Sync.Board_UI_GameBoard.Array_UI_Board[boardField.x, boardField.y].Border);
+                storyboard.Children.Add(da);
+                storyboard.Completed += new EventHandler((obj, args) =>
+                    {
+                        storyboard.Remove(this.MainWindow.Sync.Board_UI_GameBoard.Array_UI_Board[boardField.x, boardField.y].Border);
+
+                        this.MainWindow.Sync.Board_UI_GameBoard.Array_UI_Board[boardField.x, boardField.y].Border.Opacity = 1;
+                    });
+                storyboard.Begin(this.MainWindow.Sync.Board_UI_GameBoard.Array_UI_Board[boardField.x, boardField.y].Border, true);
+            }));
+        }
+    }
+}

@@ -1,0 +1,192 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Diagnostics;
+using TetrisApp;
+using TetrisGui.GUI;
+using System.Windows.Media;
+using System.Windows.Controls;
+
+
+
+namespace TetrisGui.Tools
+{
+    public class SyncMaster
+    {
+
+
+        #region VARS
+        public Game Game;
+        public BoardUI Board_UI_GameBoard;
+        public BoardUI Board_UI_PreviewBoard;
+        public MainWindow Window;
+
+        #endregion VARS
+
+        #region CONST
+
+        public SyncMaster(Game Spiel, BoardUI Board_UI_GameBoard, BoardUI Board_UI_Preview, MainWindow Window)
+        {
+            // TODO: Complete member initializations
+            this.Game = Spiel;
+            this.Board_UI_GameBoard = Board_UI_GameBoard;
+            this.Board_UI_PreviewBoard = Board_UI_Preview;
+            this.Window = Window;
+        }
+
+        #endregion CONST
+
+        #region METH
+
+        public void Sync_CoreData()
+        {
+
+            this.Window.label_Score.Content = "SCORE: " + System.Environment.NewLine + Game.Score;
+            this.Window.label_LEVEL.Content = "LEVEL : " + System.Environment.NewLine + Game.Level;
+            this.Window.label_LINES.Content = "LINES : " + System.Environment.NewLine + Game.KilledLines;
+            this.Window.label_Screen.Content = Game.Screen;
+
+        }
+
+
+        private void ScaleBoard()
+        {
+
+            int AnzSpalten = this.Game.Config.Width_GameBoard;
+            int AnzZeilen = this.Game.Config.Height_GameBoard;
+            double GridWidth = this.Window.Grid_GameBoardOuter.ActualWidth;
+            double GridHeight = this.Window.Grid_GameBoardOuter.ActualHeight;
+
+            double BreitenVerhaeltnis_Grid = GridWidth / GridHeight;
+            double BreitenVerhaeltnis_App = (double)AnzSpalten / AnzZeilen;
+            
+            
+            if (BreitenVerhaeltnis_App > BreitenVerhaeltnis_Grid)
+            {
+                this.Window.Grid_GameBoard.MaxWidth = GridWidth;
+                this.Window.Grid_GameBoard.MaxHeight = GridWidth / BreitenVerhaeltnis_App;
+                
+                //this.Window.Grid_GameBoard.MaxWidth = GridWidth;
+                //this.Window.Grid_GameBoard.MaxHeight = GridHeight * BreitenVerhaeltnis_App;
+                // Szenario 1 - Höhe wird beschränkt => Breite dehnt sich maximal aus
+                //this.Window.Grid_GameBoard.MaxHeight = .....;
+            }
+            else
+            {
+                this.Window.Grid_GameBoard.MaxHeight = GridHeight;
+                this.Window.Grid_GameBoard.MaxWidth = GridHeight * BreitenVerhaeltnis_App;
+                // Szenario 2 - Breite wird beschränkt => Höhe dehnt sich maximal aus
+                //this.Window.Grid_GameBoard.MaxWidth = .....;
+            }
+        }
+
+        private void ScaleBoard_Preview()
+        {
+
+            int AnzSpalten = this.Game.Config.Width_Preview;
+            int AnzZeilen = this.Game.Config.Height_Preview;
+            double GridWidth = this.Window.Grid_PreviewOuter.ActualWidth;
+            double GridHeight = this.Window.Grid_PreviewOuter.ActualHeight;
+
+            double BreitenVerhaeltnis_Grid = GridWidth / GridHeight;
+            double BreitenVerhaeltnis_App = (double)AnzSpalten / AnzZeilen;
+
+            //Annahme: 
+            /*
+             * GridWidth = 600 Pixel
+             * GridHeight = 1000 Pixel
+             * 
+             BreitenVerhaeltnis_App = 0.5
+             BreitenVerhaeltnis_Grid = 0.6
+             * 
+             * App sagt, meine Breite soll 50% von der Höhe sein
+             * Grid sagt: hey ich hab viel zu viel breite zur verfügung
+             * 
+             * MaxWidth = GridHeight * BreitenVerhaeltnis_App
+             * 
+             * 
+             * 
+           
+             if (BreitenVerhaeltnis_App > BreitenVerhaeltnis_Grid)
+             * 
+             => GridHeight (MaxHeight) => müsste 800 Pixel sein
+             MaxHeight = GridWidth / BreitenVerhaeltnis_App;
+             
+             */
+
+            if (BreitenVerhaeltnis_App > BreitenVerhaeltnis_Grid)
+            {
+                this.Window.Grid_PreviewBoard.MaxWidth = GridWidth;
+                this.Window.Grid_PreviewBoard.MaxHeight = GridWidth / BreitenVerhaeltnis_App;
+
+                //this.Window.Grid_GameBoard.MaxWidth = GridWidth;
+                //this.Window.Grid_GameBoard.MaxHeight = GridHeight * BreitenVerhaeltnis_App;
+                // Szenario 1 - Höhe wird beschränkt => Breite dehnt sich maximal aus
+                //this.Window.Grid_GameBoard.MaxHeight = .....;
+            }
+            else
+            {
+                this.Window.Grid_PreviewBoard.MaxHeight = GridHeight;
+                this.Window.Grid_PreviewBoard.MaxWidth = GridHeight * BreitenVerhaeltnis_App;
+                // Szenario 2 - Breite wird beschränkt => Höhe dehnt sich maximal aus
+                //this.Window.Grid_GameBoard.MaxWidth = .....;
+            }
+        }
+
+
+  
+
+        public void Sync_Refresh()
+        {
+            // Für Logik
+            Sync_CoreData();
+
+            ScaleBoard();
+            ScaleBoard_Preview();
+
+            // Für GameBoard
+            for (short x = 0; x < Game.Config.Width_GameBoard; x++)
+            {
+                for (short y = 0; y < Game.Config.Height_GameBoard; y++)
+                {
+                    if (this.Game.Board.Array_Board[x, y].Color != null)
+                    {
+                        this.Board_UI_GameBoard.Array_UI_Board[x, y].Border.Background = new SolidColorBrush(Color.FromArgb(
+                            (this.Game.Board.Array_Board[x, y].Color.Value.Opacity != null ? this.Game.Board.Array_Board[x, y].Color.Value.Opacity.Value : (byte)255),
+                        this.Game.Board.Array_Board[x, y].Color.Value.Red,
+                        this.Game.Board.Array_Board[x, y].Color.Value.Green,
+                        this.Game.Board.Array_Board[x, y].Color.Value.Blue));
+                    }
+                    else
+                    {
+                        this.Board_UI_GameBoard.Array_UI_Board[x, y].Border.ClearValue(Border.BackgroundProperty);
+                    }
+                }
+            }
+
+            // Für PreviewBoard
+            for (short x = 0; x < Game.Config.Width_Preview; x++)
+            {
+                for (short y = 0; y < Game.Config.Height_Preview; y++)
+                {
+                    if (this.Game.BoardPreview.Array_Board[x, y].Color != null)
+                    {
+                        this.Board_UI_PreviewBoard.Array_UI_Board[x, y].Border.Background = new SolidColorBrush(Color.FromArgb(
+                               (this.Game.BoardPreview.Array_Board[x, y].Color.Value.Opacity != null ? this.Game.BoardPreview.Array_Board[x, y].Color.Value.Opacity.Value : (byte)255),
+                        this.Game.BoardPreview.Array_Board[x, y].Color.Value.Red,
+                        this.Game.BoardPreview.Array_Board[x, y].Color.Value.Green,
+                        this.Game.BoardPreview.Array_Board[x, y].Color.Value.Blue));
+                    }
+                    else
+                    {
+                        this.Board_UI_PreviewBoard.Array_UI_Board[x, y].Border.ClearValue(Border.BackgroundProperty);
+                    }
+                }
+            }
+        }
+        #endregion
+    }
+}

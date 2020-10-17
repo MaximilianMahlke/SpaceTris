@@ -1,0 +1,32 @@
+﻿<Window x:Class="TetrisApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Disser(to)tris" Height="600" Width="800" Closed="Window_Closed" Closing="Window_Closing" KeyDown="Window_KeyDown">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="107*"/>
+            <ColumnDefinition Width="157*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Name="Grid_Board" HorizontalAlignment="Center"  Margin="216,24,276,5" VerticalAlignment="Center" Width="300" Height="540" Opacity="0.7" Grid.ColumnSpan="2" >
+
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="#E5AA00B2"/>
+                    <GradientStop Color="#E203035B" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+
+
+        </Grid>
+        <Label x:Name="label_Anzeige" Content="SCORE:" HorizontalAlignment="Left" Margin="10,24,0,0" VerticalAlignment="Top" Height="526" Width="199" FontSize="24" FontWeight="Bold"/>
+        <Button Content="Intro" Grid.Column="1" HorizontalAlignment="Left" Margin="268,52,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" IsTabStop="False"/>
+        <Button x:Name="button_Spawn" Content="START" Grid.Column="1" HorizontalAlignment="Left" Margin="268,152,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.053,-0.25" Click="Button_Click_1" IsTabStop="False"/>
+        <Button x:Name="button_Down" Content="RUNTER" Grid.Column="1" HorizontalAlignment="Left" Margin="294,356,0,0" VerticalAlignment="Top" Width="75" Click="button_Click_2" IsTabStop="False"/>
+        <Button x:Name="Clear" Content="Clear" Grid.Column="1" HorizontalAlignment="Left" Margin="370,152,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3" IsTabStop="False"/>
+        <Button x:Name="button_Left" Content="LINKS" Grid.Column="1" HorizontalAlignment="Left" Margin="248,331,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_4" IsTabStop="False"/>
+        <Button x:Name="button_Right" Content="RECHTS" Grid.Column="1" HorizontalAlignment="Left" Margin="328,331,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_5" IsTabStop="False"/>
+        <Button Content="DREHEN" Grid.Column="1" HorizontalAlignment="Left" Margin="294,306,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_6" IsTabStop="False"/>
+        <Button Content="PAUSE" Grid.Column="1" HorizontalAlignment="Left" Margin="268,177,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.027,-0.75" Click="Button_Click_7" IsTabStop="False"/>
+
+    </Grid>
+</Window>

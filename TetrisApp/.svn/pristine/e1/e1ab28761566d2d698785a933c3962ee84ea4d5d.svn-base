@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TetrisApp.Tools
+{
+    public class Config
+    {
+        // Definition der Größe des Spielfeldes
+        public short Width_GameBoard = 10;
+        public short Height_GameBoard = 18;
+
+        // Definition der Größe des Vorschaufensters
+        public short Width_Preview = 5;
+        public short Height_Preview = 4;
+
+
+        public TimeSpan BlockDownIntervalMS = TimeSpan.FromMilliseconds(500);
+        public TimeSpan CheckForLinesMS = TimeSpan.FromMilliseconds(100);
+        //ui
+
+        public Config()
+        {
+
+        }
+
+
+    }
+}

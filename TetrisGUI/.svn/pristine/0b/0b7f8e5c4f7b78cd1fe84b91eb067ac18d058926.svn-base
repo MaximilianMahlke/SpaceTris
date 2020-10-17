@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TetrisGui.Tools
+{
+    //Jetzt ist er endlich da
+    class SyncMaster
+    {
+        #region METH
+        /// <summary>
+        /// |_| Aufrufer: Timer |_| TODO: Rede mit Core-Array und Synchronisiere, Änderungen werden mit [Sync_Push() - Methode] in das Array_UI geschrieben
+        /// </summary>
+        public void Sync_Pop()
+        {
+
+        }
+
+
+
+        /// <summary>
+        /// |_| Aufrufer: Timer |_|  TODO: Holt sich die Änderungen der [Sync_Pop] und überträge diese in das Array_UI
+        /// </summary>
+        public void Sync_Push()
+        {
+
+        }
+        #endregion
+    }
+}

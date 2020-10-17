@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TetrisApp.Tools.Interaction
+{
+    interface IGuiIntertaction
+    {
+        void Refresh_StatisticData();
+
+        void LineKilled(int LineIndex);
+
+        
+
+    }
+}

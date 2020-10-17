@@ -1,0 +1,103 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Diagnostics;
+
+namespace TetrisGui.Tools
+{
+    public class SyncMaster
+    {
+        #region VARS
+        public System.Timers.Timer _Timer;
+        #endregion VARS
+
+        #region CONST
+        #endregion CONST
+
+
+        #region METH
+
+        public int Start_SyncMaster()
+        {
+            _Timer = new System.Timers.Timer();
+            DateTime Start = DateTime.Now;
+            _Timer = new System.Timers.Timer(1000);
+
+            TimeSpan Ergebnis = new TimeSpan();
+
+            _Timer.Elapsed += new ElapsedEventHandler(_Timer_Elapsed);
+            _Timer.AutoReset = true;
+            DateTime Target = DateTime.Now;
+            _Timer.Start();
+            Ergebnis = Target.Subtract(Start);
+
+            int inttemp = Ergebnis.Milliseconds;
+
+
+
+            return inttemp;
+        }
+
+        static void _Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            // TickerCode
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /// <summary>
+        /// |_| Aufrufer: Timer |_| TODO: Rede mit Core-Array und Synchronisiere, Änderungen werden mit [Sync_Push() - Methode] in das Array_UI geschrieben
+        /// </summary>
+        public void Sync_Pop()
+        {
+
+        }
+
+
+
+        /// <summary>
+        /// |_| Aufrufer: Timer |_|  TODO: Holt sich die Änderungen der [Sync_Pop] und überträge diese in das Array_UI
+        /// </summary>
+        public void Sync_Push()
+        {
+
+        }
+        #endregion
+    }
+}

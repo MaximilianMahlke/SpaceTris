@@ -1,0 +1,63 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Diagnostics;
+using TetrisApp;
+using TetrisApp.GUI;
+using System.Windows.Media;
+
+namespace TetrisApp.Tools
+{
+    public class SyncMaster
+    {
+        public Spiel Spiel;
+        public BoardUI Board_UI;
+
+        #region VARS
+
+        #endregion VARS
+
+        #region CONST
+
+        public SyncMaster(Spiel Spiel, BoardUI Board_UI)
+        {
+            // TODO: Complete member initialization
+            this.Spiel = Spiel;
+            this.Board_UI = Board_UI;
+        }
+
+        #endregion CONST
+
+
+        #region METH
+
+        public void Sync_Refresh()
+        {
+            for (short x = 0; x < Spiel.Config.Breite; x++)
+            {
+                for (short y = 0; y < Spiel.Config.Hoehe; y++)
+                {
+                    if (Spiel.Board.Array[x, y].Farbe != null)
+                    {
+                        Board_UI.Array_UI[x, y].Border.Background = new SolidColorBrush(Color.FromArgb(
+                            (Spiel.Board.Array[x, y].Farbe.Value.Opacity != null ? Spiel.Board.Array[x, y].Farbe.Value.Opacity.Value : (byte)255),
+                        Spiel.Board.Array[x, y].Farbe.Value.Red,
+                        Spiel.Board.Array[x, y].Farbe.Value.Green,
+                        Spiel.Board.Array[x, y].Farbe.Value.Blue));
+                    }
+                }
+            }
+
+
+
+      
+
+
+
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,338 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using TetrisApp.Elements.Fields;
+using TetrisApp.Elements.Steine;
+using TetrisApp.Tools;
+using TetrisApp.Tools.Interaction;
+using TetrisData;
+using System.IO;
+
+
+namespace TetrisApp
+{
+    public enum enum_Direction          // Richtungen für Kollisionsabfrage Check_Collision(Directon)
+    {
+        LEFT = 0, RIGHT = 1, DOWN = 2, NO_DIRECTION = 3
+    }
+
+
+    public class Game
+    {
+        #region VARS
+      
+        // Blöcke
+        public Block CurrentBlock;
+        public Block NextBlock;
+        public Config Config;
+        // Board
+        public Board Board;
+        public Board BoardPreview;
+        // GUI
+        public Object Window;
+        public IGuiInteraction GuiInteraction;
+        public JSON Json;
+        public XML Xml;
+       
+        // TIMES   
+        private Timer_Core Timer_Core;
+        public DateTime StartTime;
+        public DateTime? LastBlockMoveByUser = null;
+        public DateTime? LastBlockSpawn = null;
+        public Thread KillLineThread = null;
+        public TimeSpan MoveDownInterval;
+
+        // EVENTS
+        public List<RecurringEvent> RecurringEvents = new List<RecurringEvent>();
+        public List<BlockForm> List_BlockForms = new List<BlockForm>();                     // Erstellt eine Liste aus <BlockForm> mit dem Namen BlockFormen
+        public bool GameRunning = false;
+        public bool GameIsOver = false;
+     
+        #endregion VARS
+
+
+        #region CONS
+        public Game()
+        {
+            Config = new Config();
+            List_BlockForms = Utils.GeneriereBlockformen(this.List_BlockForms);
+            Board = new Board(this, this.Config.Width_GameBoard, this.Config.Height_GameBoard);
+            BoardPreview = new Elements.Fields.Board(this, this.Config.Width_Preview, this.Config.Height_Preview);
+            Timer_Core = new Timer_Core();
+            Timer_Core.StartSystemTimer(1);
+            Json = new JSON();
+
+            // Die Kontrollmethode TimerTick() wird dem Tick Event des Timers zugeordnet damit diese bei jedem Tick ausgeführt wird und abfragt 
+            Timer_Core.Tick += new Tools.Timer_Core.TickDelegate(this.TimerTick);
+
+            RecurringEvent BlockDown = new RecurringEvent(this.Config.BlockDownIntervalMS, this);
+            RecurringEvents.Add(BlockDown);
+            BlockDown.GetNewBlockDownIntervall();
+            BlockDown.EventAction = new RecurringEvent.EventActionDelegate(this.Execute_BlockDown);
+
+            BlockDown.Event_StartAndReset();
+
+        }
+        #endregion CONS
+
+        #region METHS
+
+        // Prüft welche Zeilen voll sond und übergibt Index an KillAllFullLines-async() Methode
+        public int? WichLineIsFull()
+        {
+            for (int y = this.Config.Height_GameBoard - 1; y > 0; y--)
+            {
+                bool LineIsFull = true;
+
+                for (int x = 0; x < this.Config.Width_GameBoard; x++)
+                {
+                    if (this.Board.Array_Board[x, y].block == null)
+                    {
+                        LineIsFull = false;
+                        break;
+                    }
+                }
+                if (LineIsFull == true)
+                {
+                    return y;
+                }
+            }
+            return null;
+        }
+
+
+        //  lösche jede volle Y-Zeile 
+        public Thread KillAllFullLines_async()
+        {
+            if (KillLineThread != null &&
+                KillLineThread.IsAlive == true)
+            {
+                return null;
+            }
+            KillLineThread = new Thread(() =>
+            {
+                while (true)
+                {
+                    int? index = this.WichLineIsFull();
+
+                    if (index == null) // keine volle Zeile mehr gefunden
+                    {
+                        break;  // also while schleife verlassen
+                    }
+                    //BACKUP erstellen:
+                    TimeSpan BlockAnimationTime = this.Config.BlockAnimationTime;
+                    TimeSpan ColorsAnimationTime = this.Config.ColorsAnimationTime;
+
+                    this.GuiInteraction.AnimationSpeed(enum_SpeedRatio.UltraFast);
+                    int IndexOfLineToKill = (int)index;
+                   
+                    for (int x = 0; x < this.Config.Width_GameBoard; x++)
+                    {
+                        this.GuiInteraction.LineBlockKilled(this.Board.Array_Board[x, IndexOfLineToKill], TimeSpan.FromMilliseconds(100));
+                        this.Board.Array_Board[x, IndexOfLineToKill].Color = new Color(255, 255, 255);
+                        System.Threading.Thread.Sleep(100);
+                        this.Board.Array_Board[x, IndexOfLineToKill].Clear();
+                    }
+
+                    MoveBoardFields_DOWN(IndexOfLineToKill);
+                    this.NextLevel();
+                    this.Config.Score += this.Config.Config_ScoreForLineKill;
+                    this.Config.KilledLines += 1;
+
+                    // score refreshen:
+                    this.GuiInteraction.Refresh_StatisticData();
+
+                    #region Backup wiederherstellen:
+                    {
+                        this.Config.BlockAnimationTime = BlockAnimationTime;
+                        this.Config.ColorsAnimationTime = ColorsAnimationTime;
+
+                        this.GuiInteraction.AnimationSpeed(enum_SpeedRatio.Refresh);
+                        //this.GuiInteraction.AnimationSpeed(enum_SpeedRatio.Slower);
+                        //this.GuiInteraction.AnimationSpeed(enum_SpeedRatio.Faster);
+                    }
+                    #endregion
+                } // while end
+            });
+            KillLineThread.Start();
+            return KillLineThread;
+        }
+        // Wenn Zeile gelöscht, bewege Alles darüber nach unten
+        public void MoveBoardFields_DOWN(int KilledLine_y)
+        {
+            for (int new_Y = KilledLine_y - 1; new_Y > 0; new_Y--)
+            {
+                int counter_empty = 0;
+                for (int x = 0; x < this.Config.Width_GameBoard; x++)
+                {
+                    if (this.Board.Array_Board[x, new_Y].Color == null) // leeres Feld
+                        counter_empty++;
+
+                    if (this.Board.Array_Board[x, new_Y].block != CurrentBlock &&               // wenn drüber NICHT Currentblock
+                        this.Board.Array_Board[x, new_Y].Color != null &&                          // ABER ein anderer block ist
+                        this.Board.Array_Board[x, new_Y + 1].block != this.CurrentBlock &&     // drunter nicht current
+                        this.Board.Array_Board[x, new_Y + 1].Color == null                        // und leer
+                        )
+                    {
+                        MoveOneBoardField_Down(this.Board.Array_Board[x, new_Y]);               // ==> Dann bewege DIESES Field nach unten
+                    }
+                }
+            }
+        }
+            // Bewegt GENAU 1 BoardField nach unten
+        public void MoveOneBoardField_Down(BoardField boardfield)
+        {
+            if (this.Board.Array_Board[boardfield.x, boardfield.y + 1].block != CurrentBlock)
+            {
+                // Übernimmt oberes BoardField um 1 nach unten
+                this.Board.Array_Board[boardfield.x, boardfield.y + 1].block = boardfield.block;
+                this.Board.Array_Board[boardfield.x, boardfield.y + 1].Color = boardfield.Color;
+
+                //Lösche oberes Feld
+                if (this.Board.Array_Board[boardfield.x, boardfield.y].block != CurrentBlock)
+                {
+                    this.Board.Array_Board[boardfield.x, boardfield.y].Clear();
+                }
+            }
+        }
+            // MoveDown-Event, bewegt den aktiven Block in festgelegten Intervallen nach unten
+        public void Execute_BlockDown()
+        {
+            if (this.GameRunning == true)
+            {
+                this.RecurringEvents[0].GetNewBlockDownIntervall();
+                this.MoveDownInterval = this.Config.BlockDownIntervalMS;
+                this.CurrentBlock.Move_down();
+            }
+        }
+
+        // wird jede ms aufgerufen und prüft, ob eines der RecurringEvents abgelaufen ist und ausgeführt werden soll
+        public void TimerTick()
+        {
+            if (GameRunning == true)
+            {
+                foreach (RecurringEvent Event in RecurringEvents)
+                {
+                    Event.Event_IntervalCheck();
+                }
+            }
+        }
+        /// <summary>
+        /// Startet das Spiel, spawnt einen stein, startet Timer etc...
+        /// </summary>
+        public void StartGame()
+        {
+            Utils.SpawnBlock(this);
+            this.StartTime = DateTime.Now;
+            this.GameRunning = true;
+            this.Config.Screen = "Hi  " + this.Config.UserName +  " HAVE A NICE DAY! :D";
+
+            // Direkt bei Spielstart den Score anzeigen
+            this.GuiInteraction.Refresh_StatisticData();
+        }
+
+        // Berechnet die bereits gelaufene Spielzeit
+        public TimeSpan GetGameTime()
+        {
+            return (DateTime.Now).Subtract(this.StartTime);
+        }
+
+        // Berechnet die UHRzeit
+        public DateTime GetRealTime()
+        {
+            return (DateTime.Now).Add(TimeSpan.FromHours(1));
+        }
+
+        // Wenn Spiel beendet, halte es an und zeige Highscores an und speichere diese in Datei
+        public void GameOver()
+        {
+            this.GameIsOver = true;
+            this.Config.Screen = "GAME OVER!";
+            this.GameRunning = false;
+            this.GuiInteraction.Refresh_StatisticData();
+            this.GuiInteraction.AnimationSpeed(enum_SpeedRatio.UltraFast);
+            this.GuiInteraction.CodeRed();
+
+            if (File.Exists("C:\\Users\\Public\\HighScore.txt"))
+            {
+                this.LoadGame();
+            }
+
+            if (File.Exists("C:\\Users\\Public\\HighScore_XML.txt"))
+            {
+                this.LoadGame();
+            }
+            this.SaveGame();
+        }
+
+
+        public void LoadGame_XML()
+        {
+            this.Config.Highscore_Core = this.Xml.ImportData();
+        }
+
+        public void SaveGame_XML()
+        {
+            this.Xml.ExportData();
+        }
+
+
+        // erhöht das Handicap und auch Punktevergabe bei jedem neuen Level
+        public void NextLevel()
+        {
+            this.Config.CounterForNextLevel++;
+            if (this.Config.CounterForNextLevel == this.Config.StepForNextLevel)
+            {
+                if (this.Config.Level != 10)
+                {
+                    this.Config.Level++;
+                    this.Config.Config_ScoreForLineKill += this.Config.Config_ScoreForLineKill / 10;
+                    this.Config.Config_ScoreForLanding += this.Config.Config_ScoreForLanding / 10;
+                    this.Config.BlockDownReducer();
+                    this.Config.CounterForNextLevel = 0;
+                    //  this.Config.StepForNextLevel += 1;
+                    this.GuiInteraction.AnimationSpeed(enum_SpeedRatio.Faster);
+                }
+            }
+        }
+
+
+        // Pausiert das Spiel bz wlässt es wieder weiter laufen
+        public void Pause()
+        {
+            if (this.GameIsOver == false)
+            {
+                if (this.GameRunning == true)
+                {
+                    this.GameRunning = false;
+                }
+                else
+                {
+                    this.GameRunning = true;
+                }
+            }
+        }
+
+
+        // Bisher nur für HighScores
+        public void SaveGame()
+        {
+            this.Config.SetHighScore();
+            this.Config.CONVERT__HighScore_Core__TO__HighScore_Export();
+            this.Json.ExportData(this.Config.HighScore_Export, "HighScore");
+        }
+
+        // Bisher nur für HighScores
+        public void LoadGame()
+        {
+            this.Config.Highscore_Core = this.Json.ImportData();
+        // this.Config.Highscore_Core = this.Json.ImportData();
+          //  this.Config.CONVERT__HighScore_Export__TO__HighScore_Core();
+        }
+
+        #endregion METHS
+
+
+
+    }
+}

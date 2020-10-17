@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Elemente.Felder;
+using TetrisApp.Elemente.Steine;
+
+namespace TetrisApp.Elemente.Felder
+{
+    public class BoardField : Feld
+    {
+        #region VARIABLEN
+       public Farbe? Color = null;
+       public Block block;
+     
+        #endregion
+
+        #region KONSTRUKTOREN
+        public BoardField(short xt, short yt, Farbe? farbe = null)
+        {
+            x = xt; 
+            y = yt;
+            this.Color = farbe;
+        }
+        #endregion
+       
+        #region METHODEN
+        public void Clear()
+        {
+            this.Color = null;
+            this.block = null;
+            
+        }
+
+
+        public override string ToString()
+        {
+           
+            return ("X: "+ x +" ||  Y: "+ y );
+        }
+        
+        #endregion
+    }
+}

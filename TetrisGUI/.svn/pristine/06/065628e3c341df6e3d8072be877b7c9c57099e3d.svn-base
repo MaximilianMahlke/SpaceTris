@@ -1,0 +1,64 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Threading;
+
+namespace TetrisGui.Tools
+{
+    class Timer
+    {
+        #region KlassenVariablen
+        private DispatcherTimer GameTimer;
+        private MainWindow Window;
+        private int Counter;
+        
+        public DateTime now = DateTime.Now;
+
+        #endregion#
+
+        /// <summary>
+        /// Konstruktor für TimerKlasse  
+        /// </summary>
+        /// <param name="dispatcher"></param>
+        public Timer(Dispatcher dispatcher, MainWindow window)
+        {
+            this.Window = window;
+            this.GameTimer = new DispatcherTimer(DispatcherPriority.Input, dispatcher);
+            this.GameTimer.Interval = TimeSpan.FromMilliseconds(20);
+            this.GameTimer.Tick += new EventHandler(this.UIaction);
+            this.GameTimer.Start();
+
+        }
+
+        #region METH
+        private void UIaction(object o, EventArgs args)
+        {
+            Counter++;
+            this.Window.Background = new SolidColorBrush(Color.FromRgb((byte)(Counter % 95), (byte)(Counter % 225), (byte)(Counter % 185)));
+        }
+
+        // thgghj
+        /// <summary>
+        /// Tickt zb. alle 100ms und ruft prüft per Sync_Methoden nach Neuigkeiten und aktualisiert, orientiert sich an [GameCounter]
+        /// </summary>
+        public void Tick()
+        {
+
+        }
+
+        
+
+
+
+        
+        
+        
+        
+        
+
+        #endregion METH
+    }
+}

@@ -1,0 +1,168 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Elemente.Steine;
+using TetrisApp.Elemente.Felder;
+using System.Windows;
+
+namespace TetrisApp.Tools
+{
+    static class Utils
+    {
+
+        /*
+                private void eigenerStein(int i)
+                {
+
+                }
+        */
+
+        public static void ErstelleBoard()
+        {
+
+        }
+       
+        
+        public static void Generator(BlockForm Form)
+        {
+            foreach (Feld feld in Form.Felder)
+            {
+                
+            }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        /// <summary>
+        /// Methode zum generieren der verschiedenen Steine
+        /// </summary>
+        /// <param name="BlockFormen"></param>
+        public static void GeneriereBlockformen(List<BlockForm> BlockFormen)
+        {
+            // Neuer Stein O
+            BlockForm O = new BlockForm()
+              {
+                  
+                  Felder = new List<Feld>()
+                {
+                    new Feld(0,0),
+                    new Feld(1,0),
+                    new Feld(0,1),
+                    new Feld(1,1)
+                }
+              };
+
+            BlockFormen.Add(O);
+
+            // Neuer Stein T
+            BlockForm T = new BlockForm()
+            {
+                Felder = new List<Feld>()
+                {
+                    new Feld(2,1),
+                    new Feld(1,0),
+                    new Feld(0,1),
+                    new Feld(1,1)
+                },
+                //  RotationsFeld=
+
+            };
+            BlockFormen.Add(T);
+
+            // Neuer Stein II
+            BlockForm II = new BlockForm()
+            {
+                Felder = new List<Feld>()
+                {
+                    new Feld(0,0),
+                    new Feld(1,0),
+                    new Feld(2,0),
+                    new Feld(3,0)
+                }
+            };
+
+            BlockFormen.Add(II);
+
+            // Neuer Stein S
+            BlockForm S = new BlockForm()
+            {
+                Felder = new List<Feld>()
+                {
+                    new Feld(0,0),
+                    new Feld(0,1),
+                    new Feld(1,1),
+                    new Feld(1,2)
+                }
+            };
+
+            BlockFormen.Add(S);
+
+            // Neuer Stein Z
+            BlockForm Z = new BlockForm()
+            {
+                Felder = new List<Feld>()
+                {
+                    new Feld(1,0),
+                    new Feld(2,0),
+                    new Feld(0,1),
+                    new Feld(1,1)
+                }
+            };
+
+            BlockFormen.Add(Z);
+
+            // Neuer Stein J
+            BlockForm J = new BlockForm()
+            {
+                Felder = new List<Feld>()
+                {
+                    new Feld(0,2),
+                    new Feld(1,2),
+                    new Feld(1,1),
+                    new Feld(1,0)
+                }
+            };
+
+            BlockFormen.Add(J);
+
+            // Neuer Stein L
+            BlockForm L = new BlockForm()
+            {
+                Felder = new List<Feld>()
+                {
+                    new Feld(0,0),
+                    new Feld(1,0),
+                    new Feld(0,1),
+                    new Feld(1,1)
+                }
+            };
+
+            BlockFormen.Add(L);
+
+          /*  // Neuer Stein TEST
+
+            BlockForm TEST = new BlockForm()
+            {
+                Felder = new List<Feld>()
+                {
+                    new Feld(0,0),
+                    new Feld(1,0),
+                    new Feld(0,1),
+                    new Feld(1,1)
+                }
+            };
+
+            BlockFormen.Add(TEST);
+            */
+        }
+    }
+}

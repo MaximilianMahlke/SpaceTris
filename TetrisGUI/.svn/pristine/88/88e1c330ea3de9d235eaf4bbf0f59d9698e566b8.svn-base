@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Tools.Interaction;
+
+namespace TetrisGui.Tools.Interaction
+{
+    class Gui_Interaction : GuiInteraction
+    {
+       
+
+        public  Gui_Interaction(MainWindow MainWindow)
+        {
+            
+        }
+
+        public override void Refresh_StatisticData()
+        {
+            
+        }
+
+        public override void LineKilled(int LineIndex)
+        {
+
+        }
+    }
+}

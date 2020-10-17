@@ -1,0 +1,40 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Threading;
+
+namespace TetrisGui.Tools
+{
+    class Timer
+    {
+        #region KlassenVariablen
+        private DispatcherTimer GameTimer;
+        private MainWindow Window;
+        private int Counter;
+         
+        #endregion#
+
+        /// <summary>
+        /// Konstruktor für TimerKlasse  sasas j
+        /// </summary>
+        /// <param name="dispatcher"></param>
+        public Timer(Dispatcher dispatcher, MainWindow window) 
+        {
+            this.Window = window;
+            this.GameTimer = new DispatcherTimer( DispatcherPriority.Input, dispatcher);
+            this.GameTimer.Interval = TimeSpan.FromMilliseconds(10);
+            this.GameTimer.Tick += new EventHandler(this.UIaction);
+            this.GameTimer.Start();
+        }
+
+        private void UIaction(object o, EventArgs args)
+            
+        {
+            Counter++;
+            this.Window.Background = new SolidColorBrush(Color.FromRgb((byte)(Counter % 95), (byte)(Counter % 225),(byte)(Counter %  185)));
+        }
+    }
+}

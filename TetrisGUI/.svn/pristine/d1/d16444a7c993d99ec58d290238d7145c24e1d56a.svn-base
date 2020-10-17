@@ -1,0 +1,110 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using TetrisGui.TetrisSpiel;
+using TetrisGui.GUI;
+using TetrisGui.Tools;
+using TetrisGui.TetrisSpiel.Elemente.Board;
+using System.Diagnostics;
+
+
+namespace TetrisGui
+{
+    /// <summary>
+    /// Interaktionslogik für MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        /// <summary>
+        /// Timer für UI
+        /// </summary>
+     
+        
+       // private TestTimer timer;
+   
+        private BoardUI Board_UI;
+        private Spiel Spiel;
+   
+        String Anzeige_Text = "Leer";
+     //   public static SyncMaster SyncMaster = new SyncMaster();
+                
+       
+        
+       
+
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+
+            
+       //    this.timer = new TestTimer(this.Dispatcher, this);
+
+           
+            Spiel = new Spiel();
+           
+            
+
+
+
+
+            #region UI
+            Board_UI = new BoardUI(this);
+            Board_UI.ErstelleGrid(this, Spiel);
+            Board_UI.GenerateBoardFeldArray(this, Spiel);
+
+
+
+            BoardFeldUI[,] BoardArray_UI = Board_UI.Array_UI;
+            #endregion
+           
+            //#region Dictionary Test
+            //Dictionary<int, String> dic = new Dictionary<int, String>();
+           
+            //dic.Add(0, "Null");
+            //dic.Add(1, "Eins");
+            //dic.Add(2, "Zwei");
+            //dic.Add(3, "Drei");
+
+            //this.label_Anzeige.Content = Anzeige_Text;
+            ////   var varTest = this.Anzeige_Text.Content;
+
+
+        }
+
+        public void Refresh()
+        {
+            Debug.WriteLine("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+            }
+
+
+
+        private void Button_Click_Test(object sender, RoutedEventArgs e)
+        {
+         Refresh();
+       
+
+
+        }
+     //   #endregion
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+                    
+            
+            //String Name1 = TextBox_Namen.Text;
+            //TextBox_Namen2.Text = Name1;
+        }
+    }
+}

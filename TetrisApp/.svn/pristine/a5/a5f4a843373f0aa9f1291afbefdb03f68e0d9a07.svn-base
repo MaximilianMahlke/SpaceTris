@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="TetrisApp.Elements.Fields.Board">
+    <Position X="10.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAABAACAAABEAAAAAAABAEAA=</HashCode>
+      <FileName>Elemente\Board\Board.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.Elemente.Felder.BoardField" Collapsed="true">
+    <Position X="7.5" Y="5.5" Width="5.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAABAA=</HashCode>
+      <FileName>Elemente\Board\BoardFeld.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.Elements.Fields.Field" Collapsed="true">
+    <Position X="8.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAA=</HashCode>
+      <FileName>Elemente\Felder\Feld.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.Elements.Steine.BlockForm">
+    <Position X="3.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAABAAAAAA=</HashCode>
+      <FileName>Elemente\Steine\BlockForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.Elemente.Steine.Block">
+    <Position X="0.5" Y="2.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AQgAAAAAAAKIRMAAAAAAAARQAAAAAAAIAAAAAAAABAA=</HashCode>
+      <FileName>Block.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.Spiel">
+    <Position X="12.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAgAAAAAAiAAAAA=</HashCode>
+      <FileName>Spiel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.Tools.Config">
+    <Position X="12.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>QEAAAABAAIACwAgABEAAAgAAQAAIABYBCRBgQAAABAA=</HashCode>
+      <FileName>Tools\Config.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.Tools.Timer_Core" Collapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABgAAAEYAAAAIIAIAIAAAAAAAAAAAAAIQAAAAAAQEw=</HashCode>
+      <FileName>Tools\Timer_Core.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.Tools.Utils">
+    <Position X="0.5" Y="5.5" Width="5.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAABAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Tools\Utils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.Elements.Steine.Block" Collapsed="true">
+    <Position X="5.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQgAAAIQAACIBIAAAAAAQBAQEAAAAAAIgAAAABAABAA=</HashCode>
+      <FileName>Elemente\Steine\Block.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.Elements.Fields.BoardField" Collapsed="true">
+    <Position X="3.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAgABABAA=</HashCode>
+      <FileName>Elemente\Board\BoardFeld.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.Elements.Fields.BlockField" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Elemente\Felder\BlockFeld.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.Game" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIgoqAAUQwgSAAAACAAEEAIgYAAAABgACAAAGjAIA0E=</HashCode>
+      <FileName>Game.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.RecurringEvent" Collapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAEAQAgACAAAAQAAIAAAAAAAAAAAAAAYAABAAAAAAA=</HashCode>
+      <FileName>RecurringEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisApp.Tools.Interaction.GuiInteraction" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgCAAAAAAAAAAAAAAAAAAAAAAAAAIAAIAAAgAAAAAAA=</HashCode>
+      <FileName>Tools\Interaction\GuiInteraction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Struct Name="TetrisApp.Elements.Steine.Color" Collapsed="true">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <FileName>Elemente\Steine\Farbe.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="TetrisApp.Tools.Interaction.IGuiInteraction" Collapsed="true">
+    <Position X="5.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgCAAAAAAAAAAAAAAAAAAAAAAAAAIAAIAAAgAAAAAAA=</HashCode>
+      <FileName>Tools\Interaction\IGuiIntertaction.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="TetrisApp.enum_Direction" Collapsed="true">
+    <Position X="5.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAACAAQgAAAAAAAAAAA=</HashCode>
+      <FileName>Game.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TetrisApp.Tools.Interaction.enum_SpeedRatio" Collapsed="true">
+    <Position X="7.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAABAAAAAAAAAAAAAAAAIBAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Tools\Interaction\IGuiIntertaction.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

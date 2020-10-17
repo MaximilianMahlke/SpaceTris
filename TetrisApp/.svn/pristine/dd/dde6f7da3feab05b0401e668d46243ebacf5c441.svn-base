@@ -1,0 +1,89 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace TetrisApp.Tools
+{
+    public class Timer_System
+    {
+        private int TimerId;
+        private TimerEventHandler TimerHandler;  // NOTE: declare at class scope so garbage collector doesn't release it!!!
+    
+        private DateTime TimerStarted;
+        private int MillisecondInterval;
+
+        public Boolean Enabled;
+
+        public delegate void TickDelegate();
+        public event TickDelegate Tick;
+
+        public Timer_System()
+        {
+            
+        }
+        //Alternative zu SystemTImer 
+        private void StartThread(int MillisecondInterval, ThreadPriority Priority = ThreadPriority.Normal)
+        {
+            Enabled = true;
+            Thread thread = new Thread(() =>
+            {
+                //SpinWait spinWait = new SpinWait();
+                while (Enabled)
+                {
+                    System.Threading.Thread.SpinWait(10);
+                    //for (int i = 0; i < 10; i++)
+                    //{
+                    //    spinWait.SpinOnce();
+                    //}
+                    if (Tick != null)
+                        Tick.Invoke();
+                }
+            });
+            thread.Priority = Priority;  
+            thread.Start();
+        }
+
+
+        public void StartSystemTimer(int MillisecondInterval)
+        {
+            Enabled = true;
+            this.MillisecondInterval = MillisecondInterval;
+            timeBeginPeriod(MillisecondInterval);
+            TimerHandler = new TimerEventHandler(TimerCallback);
+            TimerId = timeSetEvent(MillisecondInterval, 0, TimerHandler, IntPtr.Zero, EVENT_TYPE);
+            TimerStarted = DateTime.Now;
+        }
+
+        public void Stop()
+        {
+            Enabled = false;
+            TimerId = 0;
+            int err = timeKillEvent(TimerId);
+            timeEndPeriod(MillisecondInterval);            
+            System.Threading.Thread.Sleep(100); // Ensure callbacks are drained
+        }
+                
+        private void TimerCallback(int id, int msg, IntPtr user, int dw1, int dw2)
+        {
+            if (Tick != null)   // Wenn sich jemand von Ausßen auf das Event verknüpft, wird das Event ausgelöst (Invoke)
+                Tick.Invoke();          
+        }
+        
+        // P/Invoke declarations
+        private delegate void TimerEventHandler(int id, int msg, IntPtr user, int dw1, int dw2);
+        private const int TIME_PERIODIC = 1;
+        private const int EVENT_TYPE = TIME_PERIODIC;// + 0x100;  // TIME_KILL_SYNCHRONOUS causes a hang ?!
+        [DllImport("winmm.dll")]
+        private static extern int timeSetEvent(int delay, int resolution, TimerEventHandler handler, IntPtr user, int eventType);
+        [DllImport("winmm.dll")]
+        private static extern int timeKillEvent(int id);
+        [DllImport("winmm.dll")]
+        private static extern int timeBeginPeriod(int msec);
+        [DllImport("winmm.dll")]
+        private static extern int timeEndPeriod(int msec);
+    }
+}

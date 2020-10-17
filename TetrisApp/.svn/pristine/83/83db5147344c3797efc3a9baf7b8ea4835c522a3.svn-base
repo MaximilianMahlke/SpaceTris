@@ -1,0 +1,293 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Elemente.Steine;
+using TetrisApp.Elemente.Felder;
+using System.Windows;
+using TetrisApp;
+using TetrisApp.Tools;
+
+
+
+namespace TetrisApp.Tools
+{
+    public static class Utils
+    {
+
+        private static Block LastBlock = null;
+
+       public static void SpawnBlock(Spiel spiel)
+        {
+            //if (LastBlock != null)
+            {
+                spiel.Board.Clear();
+            }
+
+
+           Random r = new Random();
+           int index = r.Next(0, spiel.Board.List_BlockFormen.Count);
+           Block block = new Block(spiel.Board.List_BlockFormen[index], spiel);
+
+           block.CurrentPos_x = r.Next(6);
+
+           block.CurrentPos_y = r.Next(14);
+           
+           block.Rotation = r.Next(block.form.List_BlockVarianten.Count);
+
+           LastBlock = block;
+                       
+           block.TransferInBoard(block);
+        }
+
+        /// <summary>
+        /// Methode zum generieren der verschiedenen Blöcke
+        /// </summary>
+        /// <param name="Steine"></param>
+        public static List<BlockForm> GeneriereBlockformen(List<BlockForm> Steine)
+        {
+            #region Stein O
+            BlockForm O = new BlockForm()
+              {
+                  List_BlockVarianten = new List<List<BlockFeld>>()
+            {
+                new List<BlockFeld>()
+                {
+                    new BlockFeld(1,1),
+                    new BlockFeld(2,1),
+                    new BlockFeld(1,2),
+                    new BlockFeld(2,2)
+                }
+            
+            }
+              };
+            Steine.Add(O);
+            #endregion Stein O
+
+
+            #region Stein T
+            // Neuer Stein T
+            BlockForm T = new BlockForm()
+            {
+                List_BlockVarianten = new List<List<BlockFeld>>()
+            {
+                new List<BlockFeld>()
+                {
+                    new BlockFeld(0,1),
+                    new BlockFeld(1,0),
+                    new BlockFeld(1,1),
+                    new BlockFeld(2,1)
+                },
+                 new List<BlockFeld>()
+                {
+                    new BlockFeld(1,0),
+                    new BlockFeld(1,1),
+                    new BlockFeld(1,2),
+                    new BlockFeld(2,1)
+                },
+                 new List<BlockFeld>()
+                {
+                    new BlockFeld(0,1),
+                    new BlockFeld(1,1),
+                    new BlockFeld(2,1),
+                    new BlockFeld(1,2)
+                },
+                 new List<BlockFeld>()
+                {
+                    new BlockFeld(1,1),
+                    new BlockFeld(2,0),
+                    new BlockFeld(2,1),
+                    new BlockFeld(2,2)
+                }
+            
+            }
+            };
+            Steine.Add(T);
+            #endregion Stein O
+
+            #region Stein II
+            // Neuer Stein II
+            BlockForm II = new BlockForm()
+            {
+                List_BlockVarianten = new List<List<BlockFeld>>()
+            {
+                new List<BlockFeld>()
+                {
+                    new BlockFeld(0,2),
+                    new BlockFeld(1,2),
+                    new BlockFeld(2,2),
+                    new BlockFeld(3,2)
+                },
+                 new List<BlockFeld>()
+                {
+                    new BlockFeld(1,0),
+                    new BlockFeld(1,1),
+                    new BlockFeld(1,2),
+                    new BlockFeld(1,2)
+                }            
+            }
+            };
+
+            Steine.Add(II);
+            #endregion Stein II
+
+            #region Stein S
+            // Neuer Stein S
+            BlockForm S = new BlockForm()
+            {
+                List_BlockVarianten = new List<List<BlockFeld>>()
+            {
+                new List<BlockFeld>()
+                {
+                    new BlockFeld(2,0),
+                    new BlockFeld(1,0),
+                    new BlockFeld(0,1),
+                    new BlockFeld(1,1)
+                },
+               
+                new List<BlockFeld>()
+                {
+                    new BlockFeld(0,0),
+                    new BlockFeld(0,1),
+                    new BlockFeld(1,1),
+                    new BlockFeld(1,2)
+                },
+               }
+            };
+            Steine.Add(S);
+            #endregion Stein S
+
+
+            #region Stein Z
+            // Neuer Stein Z
+            BlockForm Z = new BlockForm()
+            {
+                List_BlockVarianten = new List<List<BlockFeld>>()
+            {
+                new List<BlockFeld>()
+                {
+                    new BlockFeld(0,0),
+                    new BlockFeld(1,0),
+                    new BlockFeld(2,1),
+                    new BlockFeld(1,1)
+                },
+                 new List<BlockFeld>()
+                {
+                    new BlockFeld(1,0),
+                    new BlockFeld(1,1),
+                    new BlockFeld(0,1),
+                    new BlockFeld(0,2)
+                },
+}
+            };
+
+            Steine.Add(Z);
+            #endregion Stein Z
+
+            #region Stein J
+            // Neuer Stein J
+            BlockForm J = new BlockForm()
+            {
+                List_BlockVarianten = new List<List<BlockFeld>>()
+            {
+                new List<BlockFeld>()
+                {
+                    new BlockFeld(0,0),
+                    new BlockFeld(1,0),
+                    new BlockFeld(1,1),
+                    new BlockFeld(1,2)
+                },
+                 new List<BlockFeld>()
+                {
+                    new BlockFeld(0,0),
+                    new BlockFeld(0,2),
+                    new BlockFeld(0,1),
+                    new BlockFeld(1,1)
+                },
+                 new List<BlockFeld>()
+                {
+                    new BlockFeld(0,1),
+                    new BlockFeld(1,1),
+                    new BlockFeld(2,1),
+                    new BlockFeld(2,2)
+                },
+                 new List<BlockFeld>()
+                {
+                    new BlockFeld(1,0),
+                    new BlockFeld(1,1),
+                    new BlockFeld(1,2),
+                    new BlockFeld(0,2)
+                }
+            
+            }
+            };
+
+            Steine.Add(J);
+            #endregion Stein J
+
+
+            #region Stein L
+            BlockForm L = new BlockForm()
+            {
+                List_BlockVarianten = new List<List<BlockFeld>>()
+            {
+                new List<BlockFeld>()
+                {
+                    new BlockFeld(0,1),
+                    new BlockFeld(1,1),
+                    new BlockFeld(2,1),
+                    new BlockFeld(0,2)
+                },
+                 new List<BlockFeld>()
+                {
+                    new BlockFeld(0,0),
+                    new BlockFeld(1,0),
+                    new BlockFeld(1,1),
+                    new BlockFeld(1,2)
+                },
+                 new List<BlockFeld>()
+                {
+                    new BlockFeld(0,1),
+                    new BlockFeld(1,1),
+                    new BlockFeld(2,1),
+                    new BlockFeld(2,0)
+                },
+                 new List<BlockFeld>()
+                {
+                    new BlockFeld(0,0),
+                    new BlockFeld(0,2),
+                    new BlockFeld(0,1),
+                    new BlockFeld(1,2)
+                }
+            
+            }
+            };
+
+            Steine.Add(L);
+            #endregion Stein L
+
+
+
+            /*  // Neuer Stein TEST
+
+              BlockForm TEST = new BlockForm()
+              {
+                  Felder = new List<Feld>()
+                  {
+                      new Feld(0,0),
+                      new Feld(1,0),
+                      new Feld(0,1),
+                      new Feld(1,1)
+                  }
+              };
+
+              BlockFormen.Add(TEST);
+              */
+
+            return Steine;
+
+        }
+
+    }
+}

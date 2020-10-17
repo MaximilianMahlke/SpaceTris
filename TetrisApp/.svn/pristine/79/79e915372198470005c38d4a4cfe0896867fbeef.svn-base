@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Tools;
+using TetrisGui.TetrisSpiel.Elemente.Board;
+using TetrisGui.Tools;
+
+
+
+namespace TetrisGui.TetrisSpiel
+{
+    public class Spiel
+    {
+        public Config Config;
+        public Board Board;
+        private Timer_Core Timer_System;
+        
+   
+
+        public Spiel()
+        {
+            Config = new Config();
+            Board = new Board(this);
+            Timer_System = new Timer_Core();
+            
+            
+
+        }
+
+    }
+}

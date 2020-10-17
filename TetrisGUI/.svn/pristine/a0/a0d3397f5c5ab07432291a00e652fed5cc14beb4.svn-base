@@ -1,0 +1,124 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using TetrisApp;
+using TetrisApp.GUI;
+using TetrisApp.Tools;
+using TetrisApp.Elemente.Board;
+using System.Diagnostics;
+using System.Threading;
+
+
+namespace TetrisApp
+{
+    /// <summary>
+    /// Interaktionslogik für MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        /// <summary>
+        /// Timer für UI
+        /// </summary>
+
+
+        // private TestTimer timer;
+
+        private BoardUI Board_UI;
+        private Spiel Spiel;
+        private Timer_GUI Timer;
+        private SyncMaster Sync;
+
+
+        //- SyncMaster erstellen
+        //- SyncMaster wird von Timer aufgerufen => Sync Methode
+        //=> Timer muss SyncMaster "kennen" (Verweis bzw. Variable für Zugriff)
+        //- Der SyncMaster überwacht das Spiel (aus dem Core) und zeichnet die UI anhand der Werte aus dem Spiel
+        //- SyncMaster muss das "Spiel" "kennen" (Variable)
+        //- SyncMaster muss das "BoardUI" "kennen" (Variable) => greift darauf zu, um UI zu aktualisieren
+
+
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+
+
+
+
+            #region UI
+            Spiel = new Spiel();
+            Board_UI = new BoardUI(this);
+            Board_UI.ErstelleGrid(this, Spiel);
+            Board_UI.GenerateBoardFeldArray(this, Spiel);
+            Sync = new SyncMaster(Spiel, Board_UI);
+            this.Timer = new Timer_GUI(this.Dispatcher, this, Sync, Spiel);
+
+          
+           
+
+
+            #endregion UI
+
+            // Beispiel für Zugriff im Sync Master
+            //BoardFeldUI EinTollesFeld = Board_UI.Array_UI[5, 6];
+            //EinTollesFeld.Border.Background = new SolidColorBrush(Color.FromArgb(255, 0, 255, 0));
+
+
+            Thread thread = new Thread(() =>
+            {
+                Random random = new Random();
+                int Dauer_Millis = random.Next(2000, 3000);
+
+                DateTime StartZeit = DateTime.Now;
+                DateTime EndZeit = StartZeit.AddMilliseconds(Dauer_Millis);
+                byte Dauer = (byte)random.Next(500, 1000);
+
+                SpinWait sw = new SpinWait();
+
+              
+                while (DateTime.Now < EndZeit)
+                {
+                    this.Spiel.Board.Array[random.Next(10), random.Next(18)].Farbe = new Elemente.Steine.Farbe(
+                        (byte)random.Next(256), 
+                        (byte)random.Next(256), 
+                        (byte)random.Next(256), 
+                        (byte)random.Next(256));
+                    
+                    Dauer = (byte)(Dauer - 1);
+                    if (Dauer < 15)
+                    {
+                        Dauer = 15;
+                    }
+
+                    for (int i = 0; i < Dauer; i++)
+                    {
+                        sw.SpinOnce();
+                    }
+                        //Thread.Sleep(Dauer);
+                    
+                    
+                }
+               
+
+
+            });
+            thread.Start();
+
+        }
+
+
+
+    }
+}

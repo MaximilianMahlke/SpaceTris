@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisGui.TetrisSpiel.Elemente.Board;
+using TetrisGui.Tools;
+
+
+
+namespace TetrisGui.TetrisSpiel
+{
+    public class Spiel
+    {
+        public Config Config;
+        public Board Board;
+        
+   
+
+        public Spiel()
+        {
+            Config = new Config();
+            Board = new Board(this);
+            
+            
+            
+
+        }
+
+    }
+}

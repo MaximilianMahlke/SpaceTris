@@ -1,0 +1,83 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Diagnostics;
+using TetrisApp;
+using TetrisGui.GUI;
+using System.Windows.Media;
+using System.Windows.Controls;
+
+namespace TetrisGui.Tools
+{
+    public class SyncMaster
+    {
+
+
+        #region VARS
+        public Game Game;
+        public BoardUI Board_UI_GameBoard;
+        public BoardUI Board_UI_PreviewBoard;
+        #endregion VARS
+
+        #region CONST
+
+        public SyncMaster(Game Spiel, BoardUI Board_UI_GameBoard, BoardUI Board_UI_Preview)
+        {
+            // TODO: Complete member initialization
+            this.Game = Spiel;
+            this.Board_UI_GameBoard = Board_UI_GameBoard;
+            this.Board_UI_PreviewBoard = Board_UI_Preview;
+        }
+
+        #endregion CONST
+
+        #region METH
+
+        public void Sync_Refresh()
+        {
+            // Für GameBoard
+            for (short x = 0; x < Game.Config.Width_GameBoard; x++)
+            {
+                for (short y = 0; y < Game.Config.Height_GameBoard; y++)
+                {
+                    if (this.Game.Board.Array_Board[x, y].Color != null)
+                    {
+                        this.Board_UI_GameBoard.Array_UI_Board[x, y].Border.Background = new SolidColorBrush(Color.FromArgb(
+                            (this.Game.Board.Array_Board[x, y].Color.Value.Opacity != null ? this.Game.Board.Array_Board[x, y].Color.Value.Opacity.Value : (byte)255),
+                        this.Game.Board.Array_Board[x, y].Color.Value.Red,
+                        this.Game.Board.Array_Board[x, y].Color.Value.Green,
+                        this.Game.Board.Array_Board[x, y].Color.Value.Blue));
+                    }
+                    else
+                    {
+                        this.Board_UI_GameBoard.Array_UI_Board[x, y].Border.ClearValue(Border.BackgroundProperty);
+                    }
+                }
+            }
+
+            // Für PreviewBoard
+            for (short x = 0; x < Game.Config.Width_Preview; x++)
+            {
+                for (short y = 0; y < Game.Config.Height_Preview; y++)
+                {
+                    if (this.Game.BoardPreview.Array_Board[x, y].Color != null)
+                    {
+                        this.Board_UI_PreviewBoard.Array_UI_Board[x, y].Border.Background = new SolidColorBrush(Color.FromArgb(
+                               (this.Game.BoardPreview.Array_Board[x, y].Color.Value.Opacity != null ? this.Game.BoardPreview.Array_Board[x, y].Color.Value.Opacity.Value : (byte)255),
+                        this.Game.BoardPreview.Array_Board[x, y].Color.Value.Red,
+                        this.Game.BoardPreview.Array_Board[x, y].Color.Value.Green,
+                        this.Game.BoardPreview.Array_Board[x, y].Color.Value.Blue));
+                    }
+                    else
+                    {
+                        this.Board_UI_PreviewBoard.Array_UI_Board[x, y].Border.ClearValue(Border.BackgroundProperty);
+                    }
+                }
+            }
+        }
+        #endregion
+    }
+}

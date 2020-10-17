@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TetrisApp.Tools.Interaction
+{
+   
+    /// <summary>
+    /// abstract bedeutet nur, dass diese Klasse nicht instanziiert werden kann
+    /// </summary>
+    public  abstract class GuiInteraction : IGuiIntertaction
+    {
+
+ 
+        // virtual bedeutet, dass man zwar Code schreiben kann, und dass diese Methode überschrieben werden DARF
+
+       
+        
+        
+        public virtual void Refresh_StatisticData()
+        {
+            
+        }
+        // abstract bedeuetet, dass disese Methode überschrieben werden MUSS
+       public abstract void LineKilled(int LineIndex);
+       
+    }
+}

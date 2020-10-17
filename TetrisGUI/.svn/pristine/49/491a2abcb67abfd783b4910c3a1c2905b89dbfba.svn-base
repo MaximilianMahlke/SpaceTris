@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TetrisGui.App" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisGui.MainWindow" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEBSgAABAAgBABCAEBAAAAkEAAgAIACCABACIAQEAgA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisGui.GUI.BGAnimation" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAEAAAIAAABABAAAAAIAIAAwAAAAAAAAACCAAAAA=</HashCode>
+      <FileName>GUI\BGAnimation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisGui.GUI.BoardFeldUI" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAEAAAAAAAAAAAAAAQABgAAAAAAA=</HashCode>
+      <FileName>GUI\BoardFeldUI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisGui.GUI.BoardUI" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAQAAAAIAEAAAgAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>GUI\BoardUI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisGui.Properties.Resources" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisGui.Properties.Settings" Collapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisGui.Tools.Interaction.Gui_Interaction" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAwAIAAIAAAgAAAAAAA=</HashCode>
+      <FileName>Tools\Interaction\Gui_Interaction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisGui.Tools.SyncMaster" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAICAAAAAAAAAIAAAAAAAAAAgAAAIAABACGAAAAAA=</HashCode>
+      <FileName>Tools\SyncMaster.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetrisGui.Tools.Timer_GUI" Collapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAgAEAAABACAAAAAA=</HashCode>
+      <FileName>Tools\Timer_GUI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

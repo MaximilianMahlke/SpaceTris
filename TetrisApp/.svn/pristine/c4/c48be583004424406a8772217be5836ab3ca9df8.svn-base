@@ -1,0 +1,372 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Elemente.Felder;
+using TetrisApp.Elemente.Steine;
+using TetrisApp.Tools;
+using TetrisApp;
+
+
+
+namespace TetrisApp.Elemente.Steine
+{
+    public class Block
+    {
+        #region VARS
+        public int Rotation { get; set; }
+        //  public static int SteinCounter { get; set; }
+        public String Name;
+        public BlockForm form;
+        private Random r = new Random();
+        public Spiel game;
+        public int CurrentPos_x;
+        public int CurrentPos_y;
+        public List<BoardField> BoardPositions = new List<BoardField>();
+        public List<BoardField> RecoverBoardPositions = new List<BoardField>();
+     
+        #endregion VARS
+
+        #region CONST
+
+        public Block(BlockForm blockform, Spiel spiel)
+        {
+            this.form = blockform;
+
+            this.game = spiel;
+            
+
+
+        }
+        #endregion CONST
+
+        #region METHS
+        /// <summary>
+        /// Aktueller Stein inkl Rotation wird in das Spielfeld (Board) übertragen, damit man ihn sieht
+        /// </summary>
+        public bool TransferToBoard(Boolean OnlyFillBoardPositions = false)
+        {
+            bool Field_Is_In_Array = true;
+            RecoverBoardPositions = BoardPositions;
+
+            foreach (BlockField blockfield in this.form.List_BlockVarianten[Rotation])
+            {
+                if (Field_Is_In_Array == false)
+                {
+                    break;
+                }
+
+                int x = CurrentPos_x + blockfield.x;
+                int y = CurrentPos_y + blockfield.y;
+
+                if (x < 0 || x > this.game.Config.Width - 1)
+                {
+                    Field_Is_In_Array = false;
+                }
+
+                if (y < 0 || y > this.game.Config.Height - 1)
+                {
+                    Field_Is_In_Array = false;
+                }
+
+                if (Field_Is_In_Array)
+                    BoardPositions.Add(game.Board.Array[x, y]);
+
+                if (OnlyFillBoardPositions == false && Field_Is_In_Array == true)
+                {
+                    game.Board.Array[x, y].block = game.CurrentBlock;
+                    game.Board.Array[x, y].Color = this.form.Farbe;                      //   new Farbe((byte)r.Next(255), (byte)r.Next(255), (byte)r.Next(255));
+                }
+
+                if (Field_Is_In_Array == false)
+                {
+                    BoardPositions.Clear();
+                }
+            }
+          
+            return Field_Is_In_Array;
+        }
+
+        /// <summary>
+        /// Beispiel für Herangehensweise für gewisse Abfragen (Womit fange ich an und was prüfe ich um beste Performance und Übersichtlichleit zu erreichen)
+        /// </summary>
+        /// <returns></returns>
+        public Boolean TEST_AllowMove()
+        {
+            Boolean result = true;
+
+            {
+                // wenn x irgendwann durch 10 teilbar, dann keine bewegung
+                for (int x = 0; x < 100; x++)
+                {
+                    if (x % 10 == 0)
+                    {
+                        result = false;
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+
+
+        /// <summary>
+        /// Prüft, ob sich der aktuelle Block bzgl.  WÄNDEN +  ANDERE BLÖCKEN bewegen darf in der vorgegebenen Richtung (enum)          
+        /// </summary>
+        /// <param name="Direction"></param>
+        /// <returns></returns>
+        public bool Check_Collision(enum_Direction Direction)
+        {          
+            bool AllowMove = true;
+
+            switch (Direction)
+            {
+                case enum_Direction.LEFT:
+
+                    foreach (BoardField boardfield in BoardPositions)
+                    {
+                        // Prüfe ob das links-liegende BoardFeld sich bereits in der untersten Zeile befindet
+                        if (boardfield.x - 1 < 0)
+                        {
+                            AllowMove = false;
+                            break;
+                        }
+
+                        // prüfe ob auf dem links-liegendem Feld ein anderer Block liegt
+                        if (this.game.Board.Array[boardfield.x - 1, boardfield.y].block != boardfield.block &&
+                            this.game.Board.Array[boardfield.x - 1, boardfield.y].block != null)
+                        {
+                            //if (this.game.Board.Array[boardfield.x - 1, boardfield.y].Color != null)
+                            {
+                                // kann sich nicht bewegen, weil anderer Block blockiert
+                                AllowMove = false;
+                                break;
+                            }
+                        }
+                    }
+
+
+
+                    break;
+
+                case enum_Direction.RIGHT:
+
+                    foreach (BoardField boardfield in BoardPositions)
+                    {
+
+                        // Prüfe ob das rechts-liegende BoardFeld sich bereits in der untersten Zeile befindet
+                        if (boardfield.x + 1 > this.game.Config.Width - 1)
+                        {
+                            AllowMove = false;
+                            break;
+                        }
+
+                        // prüfe ob auf dem rechts-liegendem Feld ein anderer Block liegt
+                        if (this.game.Board.Array[boardfield.x + 1, boardfield.y].block != boardfield.block &&
+                            this.game.Board.Array[boardfield.x + 1, boardfield.y].block != null)
+                        {
+                            //if (this.game.Board.Array[boardfield.x + 1, boardfield.y].Color != null)
+                            {
+                                // kann sich nicht bewegen, weil anderer Block blockiert
+                                AllowMove = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+
+                case enum_Direction.DOWN:
+
+                    foreach (BoardField boardfield in BoardPositions)
+                    {
+
+                        // Prüfe ob das darunter liegende BoardFeld sich bereits in der untersten Zeile befindet
+                        if (boardfield.y + 1 > this.game.Config.Height - 1)
+                        {
+                            AllowMove = false;
+                            break;
+                        }
+
+                        // prüfe ob auf dem darunter liegendem Feld ein anderer Block liegt
+                        if (this.game.Board.Array[boardfield.x, boardfield.y + 1].block != boardfield.block &&
+                            this.game.Board.Array[boardfield.x, boardfield.y + 1].block != null)
+                        {
+                            //if (this.game.Board.Array[boardfield.x, boardfield.y + 1].Color != null)
+                            {
+                                // kann sich nicht bewegen, weil anderer Block blockiert
+                                AllowMove = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+
+
+
+                // Prüft ob sich der Block drehen kann
+                case enum_Direction.NO_DIRECTION:
+
+                    Block testBlock = CopyBlock(this, true);
+                    bool TransferToBoardWasSuccessful = testBlock.TransferToBoard(OnlyFillBoardPositions: true); // + bool merken, Per TransferToBoard NUR die BoardPositions übergeben lassen OHNE ins Array zu schreiben                                         
+                    if (TransferToBoardWasSuccessful == false)
+                    {
+                        AllowMove = false;
+                    }
+                    else // Transfer was successfull
+                    
+                    {
+                        
+
+                        foreach (BoardField boardfield in testBlock.BoardPositions)
+                        {
+                            if (boardfield.x < 0 || boardfield.x > this.game.Config.Width - 1)
+                            {
+                                AllowMove = false;
+                            }
+                            if (boardfield.y < 0 || boardfield.y > this.game.Config.Height - 1)
+                            {
+                                AllowMove = false;
+                            }
+
+                            // prüfe ob der temporäre Block auf Blöcke oder Wände trifft
+                            if (this.game.Board.Array[boardfield.x, boardfield.y].block != this &&
+                                this.game.Board.Array[boardfield.x, boardfield.y].block != null)
+                            {
+                                //if (this.game.Board.Array[boardfield.x, boardfield.y].Color != null)
+                                {
+                                    // kann sich nicht bewegen, weil anderer Block blockiert
+                                    AllowMove = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+            }
+
+            return AllowMove;
+        }
+        /// <summary>
+        /// Hinweis: TransferToBoard() wird nicht aufgerufen
+        /// </summary>
+        /// <param name="Block"></param>
+        /// <param name="AndNextRotation"></param>
+        /// <returns></returns>
+        public static Block CopyBlock(Block Block, bool AndNextRotation = false)
+        {
+            Block testBlock = new Block(Block.form, Block.game)      // Kopie wird angelegt, und zwar mit der aktuell eigenen Form
+            {
+                Rotation = Block.Rotation,                           // aktuelle Rotation übergeben
+                CurrentPos_x = Block.CurrentPos_x,                   // Pos x kopieren
+                CurrentPos_y = Block.CurrentPos_y,                   // Pos y kopieren
+            };
+            if (AndNextRotation)
+            {
+                testBlock.GetNextRotation();   // genau einmal weiter drehen
+            }
+            return testBlock;
+        }
+
+        public bool Turn_right()
+        {
+            if (this.Check_Collision(enum_Direction.NO_DIRECTION) == true)
+            {
+                this.Clear_Block();
+                GetNextRotation();
+                BoardPositions.Clear();
+                this.TransferToBoard();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public bool Move_right()
+        {
+            if (this.Check_Collision(enum_Direction.RIGHT) == true)
+            {
+                this.Clear_Block();
+
+                this.CurrentPos_x += 1;
+                BoardPositions.Clear();
+                this.TransferToBoard();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool Move_left()
+        {
+            if (this.Check_Collision(enum_Direction.LEFT) == true)
+            {
+                this.Clear_Block();
+
+                this.CurrentPos_x -= 1;
+                BoardPositions.Clear();
+                this.TransferToBoard();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool Move_down()
+        {
+            if (this.Check_Collision(enum_Direction.DOWN) == true)
+            {
+                this.Clear_Block();
+                this.CurrentPos_y += 1;
+                BoardPositions.Clear();
+                this.TransferToBoard();
+                return true;
+            }
+            else
+            {
+                this.game.Score += 10;
+                while ((this.game.KillLine_y(this.game.WichLineIsFull()) == true))
+                {
+                     this.game.KillLine_y(this.game.WichLineIsFull());
+                }
+                this.game.KillLine_y(this.game.WichLineIsFull());
+                TetrisApp.Tools.Utils.SpawnBlock(this.game);
+                return false;
+            }
+        }
+
+        public void Clear_Block()
+        {
+            foreach (BoardField boardfeld in BoardPositions)
+            {
+                this.game.Board.Array[boardfeld.x, boardfeld.y].Color = null;
+                this.game.Board.Array[boardfeld.x, boardfeld.y].block = null;
+            }
+        }
+
+        public void GetNextRotation()
+        {
+            if (this.Rotation < this.form.List_BlockVarianten.Count - 1)
+            {
+                this.Rotation++;
+            }
+            else
+            {
+                this.Rotation = 0;
+            }
+        }
+        #endregion METHS
+    }
+}

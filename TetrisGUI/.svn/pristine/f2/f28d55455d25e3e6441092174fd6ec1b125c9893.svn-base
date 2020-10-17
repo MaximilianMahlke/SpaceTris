@@ -1,0 +1,251 @@
+﻿<Window x:Class="TetrisGui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Disser(to)tris" 
+        
+        
+        
+        Height="1200" 
+        Width="1900" 
+       
+        WindowState="Normal"         
+        WindowStyle="None" 
+        WindowStartupLocation="CenterScreen"
+        
+        Background="#FF1F1F1F"
+        Foreground="White"
+        
+        Closed="Window_Closed" 
+        Closing="Window_Closing" 
+        KeyDown="Window_KeyDown" 
+        Loaded="Window_Loaded">
+
+
+    <!-- 
+    1468
+    826
+    -->
+    <Window.Resources>
+
+
+    </Window.Resources>
+
+    <Grid Name="Grid_Main" RenderTransformOrigin="0.5,0.5">
+
+        <Image Panel.ZIndex="500" Source="Images/Stars.png" Stretch="Fill" RenderTransformOrigin="0.5,0.5" Margin="0" >
+            <Image.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-0.113"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Image.RenderTransform>
+        </Image>
+
+
+
+        <Button  Panel.ZIndex="2000" x:Name="Button_Close" HorizontalContentAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Top" Width="20" Height="20" Click="Button_Close_Click" FontWeight="Bold" BorderBrush="#FF3488C7" Background="#FF2C39A7" Foreground="#FF0CC8FF">
+            X
+        </Button>
+
+        <Grid Name="Grid_MainStructure" Panel.ZIndex="1000" Margin="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*"></RowDefinition>
+                <RowDefinition Height="70*"></RowDefinition>
+                <RowDefinition Height="20*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30*"></ColumnDefinition>
+                <ColumnDefinition Width="40*"></ColumnDefinition>
+                <ColumnDefinition Width="30*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+
+            <Image Grid.RowSpan="3" Grid.ColumnSpan="3" Name="Image_Cockpit" Source="Images/3d_cockpit.png" Stretch="Fill" RenderTransformOrigin="0.35,0.25" Margin="-4,-40,4,40" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                <Image.RenderTransform>
+                    <TransformGroup x:Name="TransformGroup_Cockpit">
+                        <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+                        <SkewTransform/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+
+            <Image Grid.RowSpan="3" Grid.ColumnSpan="3" Name="Image_Cockpit_CodeRed" Source="Images/3d_cockpit_GAMEOVER.png" Stretch="Fill" RenderTransformOrigin="0.35,0.25" Margin="-4,-40,4,40" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0" >
+                <Image.RenderTransform>
+                    <TransformGroup x:Name="TransformGroup_Cockpit_CodeRed">
+                        <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+                        <SkewTransform/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+
+
+            <Grid Grid.Column="1" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10*"></RowDefinition>
+                    <RowDefinition Height="90*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+
+
+
+                <Grid Name="Grid_GameBoardOuter" Margin="-30,58,-26,-31" Grid.RowSpan="2">
+                    <Grid Name="Grid_GameBoard" Opacity="0.9" Margin="0,-40,0,40">
+                        <Grid.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                <GradientStop Color="#B20E093E" Offset="0.007"/>
+                                <GradientStop Color="#B209383A" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Grid.Background>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <Grid Name="Grid_PreviewOuter" Grid.Row="1" Grid.Column="1" Height="200" Width="200" Margin="541,555,0,0" Grid.ColumnSpan="2" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Grid Name="Grid_PreviewBoard"  Opacity="0.7" Margin="0,-107,0,107">
+                    <Grid.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform AngleY="11"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Grid.RenderTransform>
+
+                    <Grid.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                            <GradientStop Color="#E5AA00B2"/>
+                            <GradientStop Color="#E203035B" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="2" Grid.Column="1">
+                <Button x:Name="button_Left" Content="LEFT" HorizontalAlignment="Left" Margin="250,110,0,0" VerticalAlignment="Top" Width="75" Click="Button_Move_left" IsTabStop="False" FontWeight="Bold" BorderBrush="#FF3488C7" Background="#FF2C39A7" Foreground="#FF0CC8FF"/>
+                <Button x:Name="button_Right" Content="RIGHT" HorizontalAlignment="Left" Margin="330,110,0,0" VerticalAlignment="Top" Width="75" Click="Button_Move_right" IsTabStop="False" FontWeight="Bold" BorderBrush="#FF3488C7" Background="#FF2C39A7" Foreground="#FF0CC8FF"/>
+                <Button Content="ROTATE" HorizontalAlignment="Left" Margin="296,84,0,0" VerticalAlignment="Top" Width="75" Click="Button_Rotate" IsTabStop="False" FontWeight="Bold" BorderBrush="#FF3488C7" Background="#FF2C39A7" Foreground="#FF0CC8FF"/>
+                <Button x:Name="button_Down" Content="DOWN" HorizontalAlignment="Left" Margin="296,134,0,0" VerticalAlignment="Top" Width="75" Click="button_Click_2" IsTabStop="False" FontWeight="Bold" BorderBrush="#FF3488C7" Background="#FF2C39A7" Foreground="#FF0CC8FF"/>
+            </Grid>
+
+
+            <Grid Grid.Row="0" Grid.Column="1">
+                <Button x:Name="button_Spawn" Content="START" HorizontalAlignment="Left" Margin="251,68,0,0" VerticalAlignment="Top" Width="74" RenderTransformOrigin="0.053,-0.25" Click="Button_Start" IsTabStop="False" FontWeight="Bold" BorderBrush="#FF3488C7" Background="#FF2C39A7" Foreground="#FF0CC8FF" IsEnabled="False"/>
+                <Button Content="PAUSE" HorizontalAlignment="Left" Margin="336,68,0,0" VerticalAlignment="Top" Width="74" RenderTransformOrigin="-0.027,-0.75" Click="Button_Click_7" IsTabStop="False" FontWeight="Bold" BorderBrush="#FF3488C7" Background="#FF2C39A7" Foreground="#FF0CC8FF" IsEnabled="False"/>
+
+                <Border BorderThickness="3" RenderTransformOrigin="0.5,0.5"  Style="{DynamicResource Border_Interface_BOTTOM}" Margin="0,-36,0,36">
+                    <Label x:Name="label_Screen" Content="WELCOME! &#x0d;&#x0a; Please enter your name and press start-button!" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold" Padding="5,3.2,5,5" Margin="0" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                </Border>
+            </Grid>
+
+
+
+            <Grid Grid.Row="2">
+                <Button x:Name="Clear" Content="Clear" HorizontalAlignment="Left" Margin="292,131,0,0" VerticalAlignment="Top" Width="76" Click="Button_Clear" IsTabStop="False" FontWeight="Bold" BorderBrush="#FF3488C7" Background="#FF2C39A7" Foreground="#FF0CC8FF"/>
+                <Button x:Name="Fill" Content="Fill" HorizontalAlignment="Left" Margin="292,103,0,0" VerticalAlignment="Top" Width="76" IsTabStop="False" Click="Fill_Click" FontWeight="Bold" BorderBrush="#FF3488C7" Background="#FF2C39A7" Foreground="#FF0CC8FF"/>
+
+                <Border HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="100" Margin="298,-61,0,0" RenderTransformOrigin="0.5,0.5" Style="{DynamicResource Border_Interface_BOTTOM}">
+                    <Border.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform AngleY="-12"/>
+                        </TransformGroup>
+                    </Border.RenderTransform>
+                    <Label x:Name="label_TIME" Content="TIME:" HorizontalAlignment="Center" Margin="0" FontSize="24" FontWeight="Bold" Padding="5,3.2,5,5" VerticalAlignment="Center"/>
+                </Border>
+
+
+
+                <Border VerticalAlignment="Top" Height="155" Margin="37,-173,155,0" RenderTransformOrigin="0.5,0.5" Style="{DynamicResource Border_Interface_BOTTOM}">
+                    <Border.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform AngleY="-16.97"/>
+                            <RotateTransform/>
+                        </TransformGroup>
+                    </Border.RenderTransform>
+                    <Label x:Name="label_Controls1" Content="Controls:" HorizontalAlignment="Center" Margin="0" FontSize="24" FontWeight="Bold" Padding="5,3.2,5,5" VerticalAlignment="Center"/>
+                </Border>
+
+
+
+                <Border VerticalAlignment="Top" Height="180" Margin="1332,-180,-1140,0" RenderTransformOrigin="0.5,0.5" Style="{DynamicResource Border_Interface_BOTTOM}">
+                    <Border.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform AngleY="18.962"/>
+                            <RotateTransform/>
+                            <TranslateTransform Y="-7.46"/>
+                        </TransformGroup>
+                    </Border.RenderTransform>
+                    <Label x:Name="label_Controls" Content="Controls:" HorizontalAlignment="Center" Margin="0" FontSize="24" FontWeight="Bold" Padding="5,3.2,5,5" VerticalAlignment="Center"/>
+                </Border>
+
+
+                <Border HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="100" Margin="97,-7,0,0" RenderTransformOrigin="0.5,0.5" Style="{DynamicResource Border_Interface_BOTTOM}">
+                    <Border.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform AngleY="-18"/>
+                        </TransformGroup>
+                    </Border.RenderTransform>
+                    <Label x:Name="label_EARTHTIME" Content="EARTHTIME:" HorizontalAlignment="Center" Margin="0" FontSize="24" FontWeight="Bold" Padding="5,3.2,5,5" VerticalAlignment="Center"/>
+                </Border>
+                <Button  x:Name="Load" Panel.ZIndex="1000" Content="Load" HorizontalAlignment="Left" Height="20" Margin="372,82,0,0" VerticalAlignment="Top" Width="74" Click="Button_Load"/>
+
+                <Border x:Name="border_highscore" Panel.ZIndex="500000000" VerticalAlignment="Top" Height="582" Margin="283,-537,-869,0" RenderTransformOrigin="0.5,0.5" Style="{DynamicResource Border_Interface_BOTTOM}" Opacity="0">
+
+                    <Label x:Name="label_HighScore" Content="HIGHSCORE:" HorizontalAlignment="Center" Margin="0" FontSize="24" FontWeight="Bold" Padding="5,3.2,5,5" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FF050A6E"/>
+                </Border>
+            </Grid>
+
+            <Grid Grid.Column="2" Grid.Row="1">
+
+                <Border BorderThickness="3" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="100" Margin="23,73,0,0" RenderTransformOrigin="0.5,0.5"  Style="{DynamicResource Border_Interface_TOP}">
+                    <Border.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform AngleY="24.808"/>
+                        </TransformGroup>
+                    </Border.RenderTransform>
+                    <Label x:Name="label_Score" Content="SCORE:" HorizontalAlignment="Center" Margin="0" FontSize="24" FontWeight="Bold" Padding="5,3.2,5,5" VerticalAlignment="Center"/>
+                </Border>
+
+
+
+
+
+
+                <Border BorderThickness="3" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="100" Margin="-896,72,0,0" RenderTransformOrigin="0.5,0.5"  Style="{DynamicResource Border_Interface_TOP}">
+                    <Border.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform AngleY="-24"/>
+                        </TransformGroup>
+                    </Border.RenderTransform>
+                    <Label x:Name="label_LINES" Content="LINES:" HorizontalAlignment="Center" Margin="0" FontSize="24" FontWeight="Bold" Padding="5,3.2,5,5" VerticalAlignment="Center"/>
+                </Border>
+            </Grid>
+
+            <Grid Grid.Column="2" Grid.Row="2">
+                <Border BorderThickness="3" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="100" Margin="143,-14,0,0" RenderTransformOrigin="0.5,0.5"  Style="{DynamicResource Border_Interface_BOTTOM}">
+                    <Border.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform AngleY="20"/>
+                        </TransformGroup>
+                    </Border.RenderTransform>
+                    <Label x:Name="label_LEVEL" Content="LEVEL:" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold" Padding="5,3.2,5,5" Margin="0" VerticalAlignment="Center"/>
+                </Border>
+            </Grid>
+            <Button  x:Name="Save" Panel.ZIndex="1000" Content="Save" HorizontalAlignment="Left" Margin="383,113,0,0" Grid.Row="2" VerticalAlignment="Top" Width="76" Click="Button_Save"/>
+            <TextBox Panel.ZIndex="3000" x:Name="textBox_UserName" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="13,70,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120" Background="#FF2C39A7" BorderBrush="#FF276FC6" Foreground="#FF10C8FF" FontWeight="Bold" PreviewDragEnter="textBox_UserName_PreviewDragEnter" TextChanged="textBox_UserName_TextChanged"/>
+
+
+
+
+        </Grid>
+        <!--Ende von Main-->
+    </Grid>
+</Window>

@@ -1,0 +1,60 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TetrisApp.Elemente.Felder;
+
+namespace TetrisApp.Elemente.Steine
+{
+    class BlockForm
+    {
+        public  List<Feld> Felder;
+        public Feld RotationsFeld;
+        public BlockFarbe Farbe;
+
+
+
+        public BlockForm()
+        {
+            this.Farbe = new BlockFarbe(0, 0, 0);
+        }
+
+        /// <summary>
+        /// Verschachteltes "struct BlockFarbe"  innerhalb einer anderen Klasse, 
+        /// </summary>
+        public struct BlockFarbe
+        {
+            #region VARIABLEN
+            byte Red;
+            byte Green;
+            byte Blue;
+            byte? Opacity;
+            #endregion
+
+            #region KONSTRUKTOR
+            public BlockFarbe(byte r, byte g, byte b)                           // Konstruktor ohne Transparenz
+            {
+                this.Red = r;
+                this.Green = g;
+                this.Blue = b;
+                this.Opacity = null;
+            }
+
+            public BlockFarbe(byte r, byte g, byte b, byte? o = null)           // Konstruktor mit Transparenz
+            {
+                this.Red = r;
+                this.Green = g;
+                this.Blue = b;
+                this.Opacity = o;
+            }
+            #endregion
+
+
+            #region METHODEN
+           
+            
+            #endregion
+        }
+    }
+}

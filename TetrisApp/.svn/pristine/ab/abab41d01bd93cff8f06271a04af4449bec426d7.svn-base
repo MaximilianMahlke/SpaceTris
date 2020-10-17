@@ -1,0 +1,115 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+
+namespace TetrisApp
+{
+    public class HighScore_Export :  IConvertible
+    {
+        #region VARS
+        public List<int> List_High_SCORE = new List<int>();
+        public List<string> List_High_NAMES = new List<string>();
+        #endregion VARS
+
+        #region CONS
+        public HighScore_Export()
+        {
+        }
+        #endregion CONS
+
+        #region METHS
+
+        // Wurde automatisch implementiert...
+        public TypeCode GetTypeCode()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ToBoolean(IFormatProvider provider)
+        {
+            return this.ToBoolean(provider);
+        }
+
+        public byte ToByte(IFormatProvider provider)
+        {
+            return this.ToByte(provider);
+        }
+
+        public char ToChar(IFormatProvider provider)
+        {
+            return this.ToChar(provider);
+        }
+
+        public DateTime ToDateTime(IFormatProvider provider)
+        {
+            return this.ToDateTime(provider);
+        }
+
+        public decimal ToDecimal(IFormatProvider provider)
+        {
+            return this.ToDecimal(provider);
+        }
+
+        public double ToDouble(IFormatProvider provider)
+        {
+            return this.ToDouble(provider);
+        }
+
+        public short ToInt16(IFormatProvider provider)
+        {
+            return this.ToInt16(provider);
+        }
+
+        public int ToInt32(IFormatProvider provider)
+        {
+            return this.ToInt32(provider);
+        }
+
+        public long ToInt64(IFormatProvider provider)
+        {
+            return this.ToInt64(provider);
+        }
+
+        public sbyte ToSByte(IFormatProvider provider)
+        {
+            return this.ToSByte(provider);
+        }
+
+        public float ToSingle(IFormatProvider provider)
+        {
+            return (float)this.ToDouble(provider);
+        }
+
+        public string ToString(IFormatProvider provider)
+        {
+            return this.ToString(provider);
+        }
+
+        public object ToType(Type conversionType, IFormatProvider provider)
+        {
+
+            MessageBox.Show("ToType", "2.ToTxype");
+            return (object)this;
+        }
+
+        public ushort ToUInt16(IFormatProvider provider)
+        {
+            return this.ToUInt16(provider);
+        }
+
+        public uint ToUInt32(IFormatProvider provider)
+        {
+            return this.ToUInt32(provider);
+        }
+
+        public ulong ToUInt64(IFormatProvider provider)
+        {
+            return this.ToUInt64(provider);
+        }
+        #endregion METHS
+    }
+}

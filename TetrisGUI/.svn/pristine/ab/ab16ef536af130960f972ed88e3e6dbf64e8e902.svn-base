@@ -1,0 +1,84 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using TetrisApp;
+using TetrisGui.GUI;
+using TetrisGui.Tools;
+using TetrisApp.Elemente.Board;
+using System.Diagnostics;
+
+
+namespace TetrisGui
+{
+    /// <summary>
+    /// Interaktionslogik für MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        /// <summary>
+        /// Timer für UI
+        /// </summary>
+
+
+        // private TestTimer timer;
+
+        private BoardUI Board_UI;
+        private Spiel Spiel;
+        private Timer_GUI Timer;
+        private SyncMaster Sync;
+
+
+        //- SyncMaster erstellen
+        //- SyncMaster wird von Timer aufgerufen => Sync Methode
+        //=> Timer muss SyncMaster "kennen" (Verweis bzw. Variable für Zugriff)
+        //- Der SyncMaster überwacht das Spiel (aus dem Core) und zeichnet die UI anhand der Werte aus dem Spiel
+        //- SyncMaster muss das "Spiel" "kennen" (Variable)
+        //- SyncMaster muss das "BoardUI" "kennen" (Variable) => greift darauf zu, um UI zu aktualisieren
+
+
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+
+
+           
+
+            #region UI
+            this.Timer = new Timer_GUI(this.Dispatcher, this);
+
+
+            Spiel = new Spiel();
+                        
+            Board_UI = new BoardUI(this);
+            Board_UI.ErstelleGrid(this, Spiel);
+            Board_UI.GenerateBoardFeldArray(this, Spiel);
+
+            Sync = new SyncMaster(Spiel, Board_UI);
+            Sync.Sync_Refresh();
+
+            
+
+            #endregion UI
+
+            // Beispiel für Zugriff im Sync Master
+            BoardFeldUI EinTollesFeld = Board_UI.Array_UI[5, 6];
+            EinTollesFeld.Border.Background = new SolidColorBrush(Color.FromArgb(150, 0, 255, 0));
+
+
+        }
+
+    }
+}

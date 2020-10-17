@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TetrisApp.Tools.Interaction
+{
+    /// <summary>
+    /// Dieses Interface legt die Methoden fest, welche von den Sub-Klassen überschrieben werden
+    /// </summary>
+    interface IGuiIntertaction
+    {
+        /// <summary>
+        /// Aktuaklisiert GUI-Daten (Score, Lines, Level, Zeit)
+        /// </summary>
+        void Refresh_StatisticData();   
+
+        void LineKilled(int LineIndex);
+
+        void AnimationSpeed(int index);
+
+        
+
+    }
+}

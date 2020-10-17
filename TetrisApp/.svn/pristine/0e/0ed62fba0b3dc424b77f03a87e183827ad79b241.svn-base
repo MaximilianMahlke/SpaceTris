@@ -1,0 +1,39 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TetrisApp.Elemente.Steine
+{
+  public struct Farbe
+    {
+    
+            #region VARIABLEN
+           public byte Red;
+           public byte Green;
+           public byte Blue;
+           public byte? Opacity;
+
+
+            #endregion
+
+            #region KONSTRUKTOR
+            public Farbe(byte r, byte g, byte b)                           // Konstruktor ohne Transparenz
+            {
+                this.Red = r;
+                this.Green = g;
+                this.Blue = b;
+                this.Opacity = null;
+            }
+
+            public Farbe(byte r, byte g, byte b, byte? o = null)           // Konstruktor mit Transparenz
+            {
+                this.Red = r;
+                this.Green = g;
+                this.Blue = b;
+                this.Opacity = o;
+            }
+            #endregion
+    }
+}
